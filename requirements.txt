@@ -34,7 +34,7 @@ seaborn==0.11.0
 ensemble_boxes==1.0.6
 
 # Albumentation
-albumentations==1.0.0
+albumentations==0.5.2
 
 # export --------------------------------------
 # coremltools>=4.1
@@ -47,5 +47,5 @@ Cython==0.29.21  # for pycocotools https://github.com/cocodataset/cocoapi/issues
 pycocotools==2.0  # COCO mAP
 
 # flexible
-addict
-timm
+addict==2.4.0
+timm==0.4.12
