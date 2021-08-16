@@ -5,7 +5,7 @@
     "TEST_DATA_CLEAN_PATH": "./data/clean/test/",
     "TRAIN_CSV_PATH": "./data/clean/train.csv",
     "TEST_CSV_PATH": "./data/clean/test.csv",
-    "META_DATA_DIR": "./meta/",
+    "META_DATA_DIR": "./data/meta/",
     "CHECKPOINT_DIR": "./checkpoints/",
     "MODEL_DIR": "./models/",
     "LOGS_DIR": "./logs/",

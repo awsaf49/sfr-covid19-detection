@@ -49,3 +49,6 @@ pycocotools==2.0  # COCO mAP
 # flexible
 addict==2.4.0
 timm==0.4.12
+
+# efficientnet
+efficientnet==1.1.1
