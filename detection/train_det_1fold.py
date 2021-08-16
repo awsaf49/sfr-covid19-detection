@@ -191,6 +191,7 @@ if __name__ == '__main__':
                     f'--hyp {HYP_PATH} --exist-ok ' + \
                     f'--backbone-weights {opt.pretrained_backbone} --freeze --freeze-modelno {FREEZE_POINT}'
 
+    print("Executing train command : ", train_command)
     os.system(train_command)
 
     # SAVE MODEL
