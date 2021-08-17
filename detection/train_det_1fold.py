@@ -51,17 +51,17 @@ def extract_model_params(model_name):
     # TODO: recheck freeze_point
     if model_name == 'yolov5x-tr':
         WEIGHTS = 'yolov5x.pt'
-        MODEL_CONFIG = 'yolov5x/models/yolov5x-tr.yaml'
+        MODEL_CONFIG = 'yolov5/models/yolov5x-tr.yaml'
         FREEZE_POINT = 10
 
     elif model_name == 'yolov5x6':
         WEIGHTS = 'yolov5x6.pt'
-        MODEL_CONFIG = 'yolov5x/models/yolov5x6.yaml'
+        MODEL_CONFIG = 'yolov5/models/yolov5x6.yaml'
         FREEZE_POINT = 12
 
     elif model_name == 'yolov3-spp':
         WEIGHTS = 'yolov3-spp.pt'
-        MODEL_CONFIG = 'yolov5x/models/yolov3-spp.yaml'
+        MODEL_CONFIG = 'yolov5/models/yolov3-spp.yaml'
         FREEZE_POINT = 11
 
     else:
@@ -205,7 +205,7 @@ if __name__ == '__main__':
     # SAVE MODEL
     try:
         print("Saving best model to ", opt.save_dir)
-        model_path = join(PATHS['YOLO_REPO_PATH'], f'runs/train/{TRAIN_NAME}/weights/best.pt')
+        model_path = f'runs/train/{TRAIN_NAME}/weights/best.pt'
         shutil.copy(
             model_path,
             opt.save_dir
