@@ -10,7 +10,6 @@ sys.path.append(Path(__file__).parent.parent.absolute().__str__())  # to run '$ 
 logger = logging.getLogger(__name__)
 
 from models.common import *
-from models.canet import ChannelAttentionBlock, SpatialAttentionBlock # CANET
 from models.experimental import *
 from utils.autoanchor import check_anchor_order
 from utils.general import make_divisible, check_file, set_logging
@@ -243,7 +242,7 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
 
         n = max(round(n * gd), 1) if n > 1 else n  # depth gain
         if m in [Conv, GhostConv, Bottleneck, GhostBottleneck, SPP, DWConv, MixConv2d, Focus, CrossConv, BottleneckCSP,
-                 C3, C3TR, ChannelAttentionBlock]:
+                 C3, C3TR]:
             c1, c2 = ch[f], args[0]
             if c2 != no:  # if not output
                 c2 = make_divisible(c2 * gw, 8)
@@ -252,9 +251,6 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
             if m in [BottleneckCSP, C3, C3TR]:
                 args.insert(2, n)  # number of repeats
                 n = 1
-        elif m is SpatialAttentionBlock:
-            c2 = ch[f[0]]
-            args = [c2, ch[f[1]], c2]
         elif m is nn.BatchNorm2d:
             args = [ch[f]]
         elif m is Concat:

@@ -83,7 +83,7 @@ def get_fix(grp):
     return grp
 
 # CONVERT
-def convert1(label_dir = new_label_dir, save=False):
+def convert1(label_dir = '', save=False):
     label_paths = glob(os.path.join(label_dir,'**/*txt'), recursive=True)
     img_cnt=0
     for label_path in tqdm(label_paths):
@@ -144,7 +144,7 @@ if __name__ == '__main__':
     # FIX DATA
     train_df['fix'] = 0
     train_df = train_df.groupby(['StudyInstanceUID']).progress_apply(get_fix)
-    print('Fixed train.csv shape: ',train_df.shape, ' and count: ', train_df.fix.value_counts())
+    print('Fixed train.csv shape: ',train_df.shape, '\nand count:\n', train_df.fix.value_counts())
     
     # CLASS TO LABEL MAPPING
     name2label = {
@@ -165,7 +165,7 @@ if __name__ == '__main__':
     fold_df['StudyInstanceUID'] = fold_df.image_id.map(dict(train_df[['image_id','StudyInstanceUID']].values))
     study2fold = dict(fold_df[['StudyInstanceUID', 'fold']].values)
     train_df['fold'] = train_df['StudyInstanceUID'].map(study2fold)
-    print('FOLDWISE train.csv count: ', train_df.fold.value_counts())
+    print('FOLDWISE train.csv count: \n', train_df.fold.value_counts())
 
     # TRANSFER MAIN DATA TO YOLO FORMAT DATA
     print('Processing Main Dataset :', end='')
@@ -189,7 +189,7 @@ if __name__ == '__main__':
     print(open(sorted(glob(PATHS['DET_TRAIN_LABELS_PATH']+'*'))[10], 'r').read())
     print(open(sorted(glob(PATHS['DET_TRAIN_LABELS_PATH']+'*'))[100], 'r').read())
     print('after conversion:')
-    print(open(sorted(glob(PATHS['YOLO_IMAGES_PATH']+'*'))[10], 'r').read())
+    print(open(sorted(glob(PATHS['YOLO_LABELS_PATH']+'*'))[10], 'r').read())
     print(open(sorted(glob(PATHS['YOLO_LABELS_PATH']+'*'))[100], 'r').read())
 
     ####################  FILTER

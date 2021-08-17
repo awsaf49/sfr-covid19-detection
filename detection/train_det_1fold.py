@@ -4,6 +4,8 @@ import yaml
 
 import numpy as np, pandas as pd
 from glob import glob
+from os import listdir
+from os.path import isfile, join
 import shutil, os
 from sklearn.model_selection import GroupKFold
 from tqdm.notebook import tqdm
@@ -47,37 +49,43 @@ def extract_json_info(json_file):
 
 def extract_model_params(model_name):
     # TODO: recheck freeze_point
-    if model_name == 'yolov5':
+    if model_name == 'yolov5x-tr':
         WEIGHTS = 'yolov5x.pt'
         MODEL_CONFIG = 'models/yolov5x-tr.yaml'
         FREEZE_POINT = 10
 
-    if model_name == 'yolov5x6':
+    elif model_name == 'yolov5x6':
         WEIGHTS = 'yolov5x6.pt'
         MODEL_CONFIG = 'models/yolov5x6.yaml'
         FREEZE_POINT = 12
 
-    if model_name == 'yolov3-spp':
+    elif model_name == 'yolov3-spp':
         WEIGHTS = 'yolov3-spp.pt'
         MODEL_CONFIG = 'models/yolov3-spp.yaml'
         FREEZE_POINT = 11
+
+    else:
+        WEIGHTS = ''
+        MODEL_CONFIG = ''
+        FREEZE_POINT = 0
 
     return WEIGHTS, MODEL_CONFIG, FREEZE_POINT
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--settings-path', type=str, default='SETTINGS.json', help='image size to create')
     parser.add_argument('--pretrained-backbone', type=str, default='', help='chexpert pretrained backbones')
-    parser.add_argument('--model', type=str, default='yolov5x', help='name of model to train')
+    parser.add_argument('--model', type=str, default='yolov5x-tr', help='name of model to train')
     parser.add_argument('--save-dir', type=str, default='det/fold/best.pt', help='where to save best.pt')
 
     parser.add_argument('--img-size', type=int, default=512, help='image size to create')
     parser.add_argument('--batch-size', type=int, default=16, help='batch size')
     parser.add_argument('--epochs', type=int, default=60, help='no of epochs to train')
     parser.add_argument('--fold', type=int, default=0, help='which fold to train')
-    parser.add_argument('--debug', type=int, default=0, help='process only 100 images in debug mode')
+    parser.add_argument('--debug', action='store_true', help='process only 100 images in debug mode')
     opt = parser.parse_args()
-
+    print(opt)
     # EXTRACT PATHS FROM SETTINGS.JSON
     PATHS = extract_json_info(opt.settings_path)
 
@@ -89,7 +97,7 @@ if __name__ == '__main__':
     DEBUG = opt.debug
 
     WEIGHTS, MODEL_CONFIG, FREEZE_POINT = extract_model_params(opt.model)
-    HYP_PATH = PATHS['YOLO_REPO_PATH'] + '/hyp.yaml' 
+    HYP_PATH = 'hyp.yaml' 
     notebook_cfg = {
         'dim':IMAGE_SIZE,
         'batch':BATCH_SIZE,
@@ -97,9 +105,9 @@ if __name__ == '__main__':
         'epochs':EPOCHS,
         'model':opt.model
     }
-    NOTEBOOK_CONFIG_PATH = PATHS['YOLO_REPO_PATH'] + 'notebook_cfg.yaml'
-    yaml.dump(notebook_cfg, open('NOTEBOOK_CONFIG_PATH', 'w'))
-    TRAIN_NAME = f'{opt.model} img{DIM} fold{FOLD}'.replace(' ', '_')    
+    NOTEBOOK_CONFIG_PATH = join(PATHS['ROOT_DIR'], 'yolov5/notebook_cfg.yaml')
+    yaml.dump(notebook_cfg, open(NOTEBOOK_CONFIG_PATH, 'w'))
+    TRAIN_NAME = f'{opt.model} img{IMAGE_SIZE} fold{FOLD}'.replace(' ', '_')    
 
     # LOAD DATAFRAMES
     main_csv_path = PATHS['YOLO_REPO_PATH'] + '/main.csv'
@@ -126,11 +134,12 @@ if __name__ == '__main__':
     train_paths = []
     fold_paths  = PATHS['YOLO_IMAGES_PATH']+train_df[train_df.fold!=FOLD].image_id+'.png'
     train_paths+=fold_paths.tolist()
-    val_paths = PATHS['YOLO_LABELS_PATH']+train_df[train_df.fold==FOLD].image_id+'.png'
+    val_paths = PATHS['YOLO_IMAGES_PATH']+train_df[train_df.fold==FOLD].image_id+'.png'
     
     rsna_paths = []
     rsna_paths+=ap1_df.image_path.tolist()
     rsna_paths+=pa1_df.image_path.tolist()
+    train_paths+=rsna_paths
     train_paths = np.unique(train_paths).tolist()
     val_paths   = np.unique(val_paths).tolist()
 
@@ -145,11 +154,9 @@ if __name__ == '__main__':
 
 
     # YOLOv5 CONFIG
-    from os import listdir
-    from os.path import isfile, join
-
     if DEBUG:
         # only process first 100 images if in debug mode
+        print("### RUNNING IN DEBUG MODE")
         train_paths = train_paths[:100]
         val_paths = val_paths[:100]
 
@@ -183,7 +190,7 @@ if __name__ == '__main__':
     import torch
     print('Setup complete. Using torch %s %s' % (torch.__version__, torch.cuda.get_device_properties(0) if torch.cuda.is_available() else 'CPU'))   
 
-    train_command = f'!WANDB_MODE=\"dryrun\" python train.py --img {IMAGE_SIZE} --batch {BATCH_SIZE} --epochs {EPOCHS} '+ \
+    train_command = f'WANDB_MODE=\"dryrun\" python train.py --img {IMAGE_SIZE} --batch {BATCH_SIZE} --epochs {EPOCHS} '+ \
                     f'--data {CONFIG_FILE_PATH} ' +  \
                     f'--cfg {MODEL_CONFIG} --weights {WEIGHTS} ' + \
                     f'--name {TRAIN_NAME} ' + \
