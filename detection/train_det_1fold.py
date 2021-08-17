@@ -23,10 +23,8 @@ def extract_json_info(json_file):
     PATHS['ROOT_DIR'] = os. getcwd()
     PATHS['YOLO_REPO_PATH'] = data['']
     PATHS['TRAIN_CSV_PATH'] = data['']
-    PATHS['TEST_CSV_PATH'] = data['']
     PATHS['DET_TRAIN_IMAGES_PATH'] = data['']
     PATHS['DET_TRAIN_LABELS_PATH'] = data['']
-    PATHS['DET_TEST_IMAGES_PATH'] = data['']
 
     # EXTERNAL RSNA DATA
     PATHS['RSNA_IMAGES_PATH'] = data['']
@@ -34,20 +32,21 @@ def extract_json_info(json_file):
     PATHS['RSNA_METADATA_CSV'] = data['']
 
     # DEFINE YOLO DATA PATH
-    os.makedirs(f'{os. getcwd()}/Dataset/scd/images', exist_ok = True)
-    os.makedirs(f'{os. getcwd()}/Dataset/scd/labels', exist_ok = True)
+    os.makedirs(f'./DETDataset/scd/images', exist_ok = True)
+    os.makedirs(f'./DETDataset/scd/labels', exist_ok = True)
 
-    PATHS['YOLO_IMAGES_PATH'] = f'{os. getcwd()}/Dataset/scd/images/main/'
-    PATHS['YOLO_LABELS_PATH'] = f'{os. getcwd()}/Dataset/scd/labels/main/'
-    PATHS['YOLO_RSNA_IMAGES_PATH'] = f'{os. getcwd()}/Dataset/scd/images/rsna-pdc/'
-    PATHS['YOLO_RSNA_LABELS_PATH'] = f'{os. getcwd()}/Dataset/scd/labels/rsna-pdc/'
+    PATHS['YOLO_IMAGES_PATH'] = f'./DETDataset/scd/images/main/'
+    PATHS['YOLO_LABELS_PATH'] = f'./DETDataset/scd/labels/main/'
+    PATHS['YOLO_RSNA_IMAGES_PATH'] = f'./DETDataset/scd/images/rsna-pdc/'
+    PATHS['YOLO_RSNA_LABELS_PATH'] = f'./DETDataset/scd/labels/rsna-pdc/'
     
-
     PATHS['META_DATA_DIR'] = data['']
     return PATHS
 
-
 def extract_model_params(model_name):
+    '''
+    returns model specific params based on model_name
+    '''
     # TODO: recheck freeze_point
     if model_name == 'yolov5x-tr':
         WEIGHTS = 'yolov5x.pt'
@@ -65,6 +64,7 @@ def extract_model_params(model_name):
         FREEZE_POINT = 11
 
     else:
+        print('Wrong model name. Accepted names are : yolov5x-tr, yolov5x6, yolov3-spp')
         WEIGHTS = ''
         MODEL_CONFIG = ''
         FREEZE_POINT = 0
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     DEBUG = opt.debug
 
     WEIGHTS, MODEL_CONFIG, FREEZE_POINT = extract_model_params(opt.model)
-    HYP_PATH = 'hyp.yaml' 
+    HYP_PATH = join(PATHS['YOLO_REPO_PATH'],'hyp.yaml')
     notebook_cfg = {
         'dim':IMAGE_SIZE,
         'batch':BATCH_SIZE,
@@ -105,13 +105,13 @@ if __name__ == '__main__':
         'epochs':EPOCHS,
         'model':opt.model
     }
-    NOTEBOOK_CONFIG_PATH = join(PATHS['ROOT_DIR'], 'yolov5/notebook_cfg.yaml')
+    NOTEBOOK_CONFIG_PATH = join(PATHS['YOLO_REPO_PATH'], 'notebook_cfg.yaml')
     yaml.dump(notebook_cfg, open(NOTEBOOK_CONFIG_PATH, 'w'))
     TRAIN_NAME = f'{opt.model} img{IMAGE_SIZE} fold{FOLD}'.replace(' ', '_')    
 
     # LOAD DATAFRAMES
-    main_csv_path = PATHS['YOLO_REPO_PATH'] + '/main.csv'
-    rsna_csv_path = PATHS['YOLO_REPO_PATH'] + '/rsna.csv'
+    main_csv_path = join(PATHS['YOLO_REPO_PATH'], 'main.csv')
+    rsna_csv_path = join(PATHS['YOLO_REPO_PATH'], 'rsna.csv')
     train_df = pd.read_csv(main_csv_path)
     rsna_df = pd.read_csv(rsna_csv_path)
     ap1_df = rsna_df[(rsna_df.view=='AP')&(rsna_df.label==1)]
@@ -160,23 +160,23 @@ if __name__ == '__main__':
         train_paths = train_paths[:100]
         val_paths = val_paths[:100]
 
-    with open(join(PATHS['ROOT_DIR'], 'train.txt'), 'w') as f:
+    with open(join(PATHS['YOLO_IMAGES_PATH'], 'train.txt'), 'w') as f:
         for path in train_paths:
             f.write(path+'\n')
                 
-    with open(join(PATHS['ROOT_DIR'] , 'val.txt'), 'w') as f:
+    with open(join(PATHS['YOLO_IMAGES_PATH'], 'val.txt'), 'w') as f:
         for path in val_paths:
             f.write(path+'\n')
 
     names = ['opacity']
     data = dict(
-        train =  join(PATHS['ROOT_DIR'] , 'train.txt') ,
-        val   =  join(PATHS['ROOT_DIR'], 'val.txt' ),
+        train =  join(PATHS['YOLO_IMAGES_PATH'], 'train.txt') ,
+        val   =  join(PATHS['YOLO_IMAGES_PATH'], 'val.txt' ),
         nc    = 1,
         names = names,
         )
 
-    CONFIG_FILE_PATH = join(PATHS['ROOT_DIR'], 'siim-covid-19.yaml')
+    CONFIG_FILE_PATH = join(PATHS['YOLO_IMAGES_PATH'], 'siim-covid-19.yaml')
     with open(CONFIG_FILE_PATH, 'w') as outfile:
         yaml.dump(data, outfile, default_flow_style=False)
 
@@ -185,12 +185,12 @@ if __name__ == '__main__':
     print(f.read())
 
 
-    # GOTO YOLOv5
-    os.chdir(PATHS['YOLO_REPO_PATH'])
+    # TRAIN USING YOLOv5
     import torch
     print('Setup complete. Using torch %s %s' % (torch.__version__, torch.cuda.get_device_properties(0) if torch.cuda.is_available() else 'CPU'))   
+    train_script_path = join(PATHS['YOLO_REPO_PATH'], 'train.py')
 
-    train_command = f'WANDB_MODE=\"dryrun\" python train.py --img {IMAGE_SIZE} --batch {BATCH_SIZE} --epochs {EPOCHS} '+ \
+    train_command = f'WANDB_MODE=\"dryrun\" python {train_script_path} --img {IMAGE_SIZE} --batch {BATCH_SIZE} --epochs {EPOCHS} '+ \
                     f'--data {CONFIG_FILE_PATH} ' +  \
                     f'--cfg {MODEL_CONFIG} --weights {WEIGHTS} ' + \
                     f'--name {TRAIN_NAME} ' + \
@@ -203,6 +203,7 @@ if __name__ == '__main__':
 
     # SAVE MODEL
     try:
+        print("Saving best model to ", opt.save_dir)
         shutil.copy(
             f'runs/train/{TRAIN_NAME}/weights/best.pt',
             opt.save_dir

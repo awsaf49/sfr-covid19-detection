@@ -5,6 +5,8 @@ import yaml
 import numpy as np, pandas as pd
 from glob import glob
 import shutil, os
+from os import listdir
+from os.path import isfile, join
 from sklearn.model_selection import GroupKFold
 from tqdm.notebook import tqdm
 import seaborn as sns
@@ -21,10 +23,8 @@ def extract_json_info(json_file):
     PATHS['ROOT_DIR'] = os. getcwd()
     PATHS['YOLO_REPO_PATH'] = data['']
     PATHS['TRAIN_CSV_PATH'] = data['']
-    PATHS['TEST_CSV_PATH'] = data['']
     PATHS['DET_TRAIN_IMAGES_PATH'] = data['']
     PATHS['DET_TRAIN_LABELS_PATH'] = data['']
-    PATHS['DET_TEST_IMAGES_PATH'] = data['']
 
     # EXTERNAL RSNA DATA
     PATHS['RSNA_IMAGES_PATH'] = data['']
@@ -32,15 +32,14 @@ def extract_json_info(json_file):
     PATHS['RSNA_METADATA_CSV'] = data['']
 
     # DEFINE YOLO DATA PATH
-    os.makedirs(f'{os. getcwd()}/Dataset/scd/images', exist_ok = True)
-    os.makedirs(f'{os. getcwd()}/Dataset/scd/labels', exist_ok = True)
+    os.makedirs(f'./DETDataset/scd/images', exist_ok = True)
+    os.makedirs(f'./DETDataset/scd/labels', exist_ok = True)
 
-    PATHS['YOLO_IMAGES_PATH'] = f'{os. getcwd()}/Dataset/scd/images/main/'
-    PATHS['YOLO_LABELS_PATH'] = f'{os. getcwd()}/Dataset/scd/labels/main/'
-    PATHS['YOLO_RSNA_IMAGES_PATH'] = f'{os. getcwd()}/Dataset/scd/images/rsna-pdc/'
-    PATHS['YOLO_RSNA_LABELS_PATH'] = f'{os. getcwd()}/Dataset/scd/labels/rsna-pdc/'
+    PATHS['YOLO_IMAGES_PATH'] = f'./DETDataset/scd/images/main/'
+    PATHS['YOLO_LABELS_PATH'] = f'./DETDataset/scd/labels/main/'
+    PATHS['YOLO_RSNA_IMAGES_PATH'] = f'./DETDataset/scd/images/rsna-pdc/'
+    PATHS['YOLO_RSNA_LABELS_PATH'] = f'./DETDataset/scd/labels/rsna-pdc/'
     
-
     PATHS['META_DATA_DIR'] = data['']
     return PATHS
     
@@ -130,15 +129,13 @@ if __name__ == '__main__':
 
     # LOAD HYPERPARAMETERS
     HYP = hyperparams()
-    hyp_path = PATHS['YOLO_REPO_PATH'] + '/hyp.yaml'
+    hyp_path = join(PATHS['YOLO_REPO_PATH'],'hyp.yaml')
     yaml.dump(yaml.load(HYP), open(hyp_path, 'w'))
     yaml.load(open(hyp_path, 'r'), yaml.FullLoader)
 
     # LOAD META DATA
     train_df = pd.read_csv(PATHS['TRAIN_CSV_PATH'])
-    test_df  = pd.read_csv(PATHS['TEST_CSV_PATH'])
     train_df['image_path'] = PATHS['DET_TRAIN_IMAGES_PATH'] + train_df.image_id + '.png'
-    test_df['image_path']  = PATHS['DET_TEST_IMAGES_PATH'] + test_df.image_id + '.png'
     print('Checking train.csv shape: ',train_df.shape)
 
     # FIX DATA
@@ -161,7 +158,7 @@ if __name__ == '__main__':
     
 
     # SPLIT
-    fold_df = pd.read_csv(f"{PATHS['META_DATA_DIR']}/scd_fold.csv")
+    fold_df = pd.read_csv(join(PATHS['META_DATA_DIR'], 'scd_fold.csv'))
     fold_df['StudyInstanceUID'] = fold_df.image_id.map(dict(train_df[['image_id','StudyInstanceUID']].values))
     study2fold = dict(fold_df[['StudyInstanceUID', 'fold']].values)
     train_df['fold'] = train_df['StudyInstanceUID'].map(study2fold)
@@ -207,8 +204,8 @@ if __name__ == '__main__':
     print('After removal:',train_df.shape[0])
 
     # save df
-    main_csv_path = PATHS['YOLO_REPO_PATH'] + '/main.csv'
-    rsna_csv_path = PATHS['YOLO_REPO_PATH'] + '/rsna.csv'
+    main_csv_path = join(PATHS['YOLO_REPO_PATH'], 'main.csv')
+    rsna_csv_path = join(PATHS['YOLO_REPO_PATH'], 'rsna.csv')
     print('Saving DataFrames :', end='')
     train_df.to_csv(main_csv_path, index=False)
     rsna_df.to_csv(rsna_csv_path, index=False)
