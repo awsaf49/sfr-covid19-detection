@@ -21,7 +21,7 @@ def extract_json_info(json_file):
     with open(json_file, 'r') as f:
         data = json.load(f)
     PATHS['ROOT_DIR'] = os. getcwd()
-    PATHS['YOLO_REPO_PATH'] = data['']
+    PATHS['YOLO_REPO_PATH'] = 'yolov5'
     PATHS['TRAIN_CSV_PATH'] = data['']
     PATHS['DET_TRAIN_IMAGES_PATH'] = data['']
     PATHS['DET_TRAIN_LABELS_PATH'] = data['']
@@ -32,17 +32,17 @@ def extract_json_info(json_file):
     PATHS['RSNA_METADATA_CSV'] = data['']
 
     # DEFINE YOLO DATA PATH
-    os.makedirs(f'./DETDataset/scd/images', exist_ok = True)
-    os.makedirs(f'./DETDataset/scd/labels', exist_ok = True)
+    os.makedirs('yolov5/DETDataset/scd/images', exist_ok = True)
+    os.makedirs('yolov5/DETDataset/scd/labels', exist_ok = True)
 
-    PATHS['YOLO_IMAGES_PATH'] = f'./DETDataset/scd/images/main/'
-    PATHS['YOLO_LABELS_PATH'] = f'./DETDataset/scd/labels/main/'
-    PATHS['YOLO_RSNA_IMAGES_PATH'] = f'./DETDataset/scd/images/rsna-pdc/'
-    PATHS['YOLO_RSNA_LABELS_PATH'] = f'./DETDataset/scd/labels/rsna-pdc/'
+    PATHS['YOLO_IMAGES_PATH'] = 'yolov5/DETDataset/scd/images/main/'
+    PATHS['YOLO_LABELS_PATH'] = 'yolov5/DETDataset/scd/labels/main/'
+    PATHS['YOLO_RSNA_IMAGES_PATH'] = 'yolov5/DETDataset/scd/images/rsna-pdc/'
+    PATHS['YOLO_RSNA_LABELS_PATH'] = 'yolov5/DETDataset/scd/labels/rsna-pdc/'
     
     PATHS['META_DATA_DIR'] = data['']
     return PATHS
-    
+
 def hyperparams():
     hyp = """lr0: 0.01  # initial learning rate (SGD=1E-2, Adam=1E-3)
 lrf: 0.2  # final OneCycleLR learning rate (lr0 * lrf)

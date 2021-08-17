@@ -4,9 +4,9 @@ import yaml
 
 import numpy as np, pandas as pd
 from glob import glob
+import shutil, os
 from os import listdir
 from os.path import isfile, join
-import shutil, os
 from sklearn.model_selection import GroupKFold
 from tqdm.notebook import tqdm
 import seaborn as sns
@@ -21,7 +21,7 @@ def extract_json_info(json_file):
     with open(json_file, 'r') as f:
         data = json.load(f)
     PATHS['ROOT_DIR'] = os. getcwd()
-    PATHS['YOLO_REPO_PATH'] = data['']
+    PATHS['YOLO_REPO_PATH'] = 'yolov5'
     PATHS['TRAIN_CSV_PATH'] = data['']
     PATHS['DET_TRAIN_IMAGES_PATH'] = data['']
     PATHS['DET_TRAIN_LABELS_PATH'] = data['']
@@ -32,16 +32,17 @@ def extract_json_info(json_file):
     PATHS['RSNA_METADATA_CSV'] = data['']
 
     # DEFINE YOLO DATA PATH
-    os.makedirs(f'./DETDataset/scd/images', exist_ok = True)
-    os.makedirs(f'./DETDataset/scd/labels', exist_ok = True)
+    os.makedirs('yolov5/DETDataset/scd/images', exist_ok = True)
+    os.makedirs('yolov5/DETDataset/scd/labels', exist_ok = True)
 
-    PATHS['YOLO_IMAGES_PATH'] = f'./DETDataset/scd/images/main/'
-    PATHS['YOLO_LABELS_PATH'] = f'./DETDataset/scd/labels/main/'
-    PATHS['YOLO_RSNA_IMAGES_PATH'] = f'./DETDataset/scd/images/rsna-pdc/'
-    PATHS['YOLO_RSNA_LABELS_PATH'] = f'./DETDataset/scd/labels/rsna-pdc/'
+    PATHS['YOLO_IMAGES_PATH'] = 'yolov5/DETDataset/scd/images/main/'
+    PATHS['YOLO_LABELS_PATH'] = 'yolov5/DETDataset/scd/labels/main/'
+    PATHS['YOLO_RSNA_IMAGES_PATH'] = 'yolov5/DETDataset/scd/images/rsna-pdc/'
+    PATHS['YOLO_RSNA_LABELS_PATH'] = 'yolov5/DETDataset/scd/labels/rsna-pdc/'
     
     PATHS['META_DATA_DIR'] = data['']
     return PATHS
+
 
 def extract_model_params(model_name):
     '''
@@ -50,17 +51,17 @@ def extract_model_params(model_name):
     # TODO: recheck freeze_point
     if model_name == 'yolov5x-tr':
         WEIGHTS = 'yolov5x.pt'
-        MODEL_CONFIG = 'models/yolov5x-tr.yaml'
+        MODEL_CONFIG = 'yolov5x/models/yolov5x-tr.yaml'
         FREEZE_POINT = 10
 
     elif model_name == 'yolov5x6':
         WEIGHTS = 'yolov5x6.pt'
-        MODEL_CONFIG = 'models/yolov5x6.yaml'
+        MODEL_CONFIG = 'yolov5x/models/yolov5x6.yaml'
         FREEZE_POINT = 12
 
     elif model_name == 'yolov3-spp':
         WEIGHTS = 'yolov3-spp.pt'
-        MODEL_CONFIG = 'models/yolov3-spp.yaml'
+        MODEL_CONFIG = 'yolov5x/models/yolov3-spp.yaml'
         FREEZE_POINT = 11
 
     else:
@@ -125,23 +126,23 @@ if __name__ == '__main__':
         'Atypical Appearance': 2,
         'Typical Appearance': 3,
     }
-    class_names  = list(name2label.keys())
+    class_names = list(name2label.keys())
     class_labels = list(name2label.values())
     label2name = {v:k for k, v in name2label.items()}
 
 
     # DISTRIBUTE FOLDWISE DATA
     train_paths = []
-    fold_paths  = PATHS['YOLO_IMAGES_PATH']+train_df[train_df.fold!=FOLD].image_id+'.png'
-    train_paths+=fold_paths.tolist()
+    fold_paths = PATHS['YOLO_IMAGES_PATH']+train_df[train_df.fold!=FOLD].image_id+'.png'
+    train_paths += fold_paths.tolist()
     val_paths = PATHS['YOLO_IMAGES_PATH']+train_df[train_df.fold==FOLD].image_id+'.png'
     
     rsna_paths = []
-    rsna_paths+=ap1_df.image_path.tolist()
-    rsna_paths+=pa1_df.image_path.tolist()
-    train_paths+=rsna_paths
+    rsna_paths += ap1_df.image_path.tolist()
+    rsna_paths += pa1_df.image_path.tolist()
+    train_paths += rsna_paths
     train_paths = np.unique(train_paths).tolist()
-    val_paths   = np.unique(val_paths).tolist()
+    val_paths = np.unique(val_paths).tolist()
 
     print('Datasets:')
     print(f'  fold{FOLD}    :',len(fold_paths))
@@ -160,23 +161,23 @@ if __name__ == '__main__':
         train_paths = train_paths[:100]
         val_paths = val_paths[:100]
 
-    with open(join(PATHS['YOLO_IMAGES_PATH'], 'train.txt'), 'w') as f:
+    with open(join(PATHS['YOLO_REPO_PATH'], 'train.txt'), 'w') as f:
         for path in train_paths:
             f.write(path+'\n')
                 
-    with open(join(PATHS['YOLO_IMAGES_PATH'], 'val.txt'), 'w') as f:
+    with open(join(PATHS['YOLO_REPO_PATH'], 'val.txt'), 'w') as f:
         for path in val_paths:
             f.write(path+'\n')
 
     names = ['opacity']
     data = dict(
-        train =  join(PATHS['YOLO_IMAGES_PATH'], 'train.txt') ,
-        val   =  join(PATHS['YOLO_IMAGES_PATH'], 'val.txt' ),
+        train =  join(PATHS['YOLO_REPO_PATH'], 'train.txt') ,
+        val   =  join(PATHS['YOLO_REPO_PATH'], 'val.txt' ),
         nc    = 1,
         names = names,
         )
 
-    CONFIG_FILE_PATH = join(PATHS['YOLO_IMAGES_PATH'], 'siim-covid-19.yaml')
+    CONFIG_FILE_PATH = join(PATHS['YOLO_REPO_PATH'], 'siim-covid-19.yaml')
     with open(CONFIG_FILE_PATH, 'w') as outfile:
         yaml.dump(data, outfile, default_flow_style=False)
 
@@ -204,8 +205,9 @@ if __name__ == '__main__':
     # SAVE MODEL
     try:
         print("Saving best model to ", opt.save_dir)
+        model_path = join(PATHS['YOLO_REPO_PATH'], f'runs/train/{TRAIN_NAME}/weights/best.pt')
         shutil.copy(
-            f'runs/train/{TRAIN_NAME}/weights/best.pt',
+            model_path,
             opt.save_dir
         )
     except Exception as e: 
