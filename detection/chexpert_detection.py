@@ -1,5 +1,8 @@
 
 
+
+
+
 import timm
 from timm.models.layers import SelectAdaptivePool2d
 import numpy as np
@@ -40,17 +43,20 @@ if __name__ == '__main__':
     
     opt = parser.parse_args()
     if opt.CONFIG == "yolov5x-tr.yaml":
-        CONFIG = '/kaggle/working/yolo/yolov5/models/yolov5x-tr.yaml'
+        CONFIG = './yolov5/models/yolov5x-tr.yaml'
         MODEL = 'yolov5x'
         WEIGHTS = MODEL + ".pt"
         END_MODEL_POINT = 10
     elif opt.CONFIG == "yolov3-spp.yaml":
-        CONFIG = '/kaggle/working/yolo/yolov5/models/yolov3-spp.yaml'
+        CONFIG = './yolov5/models/yolov3-spp.yaml'
         MODEL = 'yolov3-spp'
         WEIGHTS = MODEL + ".pt"
         END_MODEL_POINT = 11
-    elif opt.CONFIG == "yolov5x6":
-        pass
+    elif opt.CONFIG == "yolov5x6.yaml":
+        CONFIG = './yolov5/models/yolov5x6.yaml'
+        MODEL = 'yolov5x'
+        WEIGHTS = MODEL + ".pt"
+        END_MODEL_POINT = 12
     else:
         print("Invalid config")
         
@@ -101,12 +107,12 @@ if __name__ == '__main__':
     seed_everything(42)
 
     
-    shutil.copytree("/kaggle/input/srf-covid-19-detection/sfr-covid19-detection/yolov5", "./yolo/yolov5")
+#     shutil.copytree("/kaggle/input/srf-covid-19-detection/sfr-covid19-detection/yolov5", "./yolo/yolov5")
 #     os.chdir('/kaggle/working/yolo/yolov5')
 #     pip install -qr requirements.txt # install dependencies
 #     os.chdir('/kaggle/working')
     
-    sys.path.append('./yolo/yolov5')
+    sys.path.append('./yolov5')
     from models.yolo import Model
     from od import Model_flexible
     from utils.google_utils import attempt_download
@@ -255,13 +261,15 @@ if __name__ == '__main__':
 #     )
 
     
+    with open("./SETTINGS.json") as f:
+        data = json.load(f)
     
-    train_df = pd.read_csv("/kaggle/input/chexpert-512a-dataset/train.csv")
+    train_df = pd.read_csv(f"{data['ROOT_CHEXPERT_DIR']}/train.csv")
     train_df = train_df.fillna(0)
-    val_df = pd.read_csv("/kaggle/input/chexpert-512a-dataset/valid.csv")
+    val_df = pd.read_csv(f"{data['ROOT_CHEXPERT_DIR']}/valid.csv")
     val_df = val_df.fillna(0)
     df = train_df.append(val_df)
-    df['Path'] = df['Path'].apply(lambda x : '/kaggle/input/chexpert-512a-dataset/' + '/'.join(x.split('/')[1:]))
+    df['Path'] = df['Path'].apply(lambda x : f"{data['ROOT_CHEXPERT_DIR']}/" + '/'.join(x.split('/')[1:]))
     df = df[~df[df.columns[3]].str.contains("Lateral")]
     df = df.drop(["Sex", "Age", "Frontal/Lateral", "AP/PA"], axis=1)
     df = df.replace(-1,1)
@@ -730,8 +738,3 @@ if __name__ == '__main__':
     else:
         fitter.fit(train_loader, val_loader)
         
-        
-    
-
-    shutil.rmtree('/kaggle/working/yolo')
-
