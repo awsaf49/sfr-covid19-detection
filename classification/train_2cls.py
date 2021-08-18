@@ -17,6 +17,7 @@ from sklearn.model_selection import KFold
 from sklearn.metrics import roc_auc_score
 import matplotlib.pyplot as plt
 import tensorflow_addons as tfa
+import gc
 
 ## global parameters
 
@@ -25,7 +26,21 @@ class_labels= [0, 1]
 name2label = dict(zip(class_names, class_labels))
 label2name = {v:k for k, v in name2label.items()}
 
+#-----------------------------------------
+# VISUALIZATION
+#-----------------------------------------
 
+def display_batch(batch, save_path,size=2):
+    imgs, tars = batch
+    plt.figure(figsize=(size*5, 5))
+    for img_idx in range(size):
+        plt.subplot(1, size, img_idx+1)
+        plt.title(f'class: {label2name[np.round(tars[img_idx].numpy())]}', fontsize=15)
+        plt.imshow(imgs[img_idx,:, :, :])
+        plt.xticks([])
+        plt.yticks([])
+    plt.savefig(save_path)
+    #plt.show() 
 
 #-----------------------------------------
 # SEEDING AND ACCELERATOR 
@@ -288,10 +303,25 @@ def build_model(dim=[512,512], model_name='efficientnet_b0',weights="imagenet",c
 
 
 #-----------------------------------------
-# LR Callback
+# Callback
 #-----------------------------------------
-
-
+class EpochSave(tf.keras.callbacks.Callback):
+    def __init__(self,save_epoch,filepath,save_weights_only=False,verbose=1):
+        self.save_epoch=save_epoch-1
+        self.verbose=verbose
+        self.filepath=filepath
+        self.save_weights_only=save_weights_only
+        
+    def on_epoch_end(self, epoch, logs=None):
+        if epoch==self.save_epoch:
+            if self.save_weights_only:
+                self.model.save_weights(self.filepath)
+            else:
+                self.model.save(self.filepath)
+            if self.verbose==1:
+                print(f'Saved model at {self.filepath}')
+                
+                
 
 def get_lr_callback(batch_size=8, plot=False):
     lr_start   = 0.000005
@@ -322,8 +352,10 @@ if __name__ == "__main__":
     parser.add_argument("--TRAIN_DATA_CLEAN_PATH", type=str, default="/tmp/Dataset/", help="directory of images")
     parser.add_argument("--CHECKPOINT_DIR", type=str, default="imagenet", help="location of checkpoint file")
     parser.add_argument("--RICORD_PATH", type=str, default="", help="directory of ricord images")
-    parser.add_argument("--MODEL_DIR", type=str, default="weights/4cls", help="where to save model after training")
+    parser.add_argument("--MODEL_DIR", type=str, default="classification/runs_2cls/weight", help="where to save model after training")
+    parser.add_argument("--cfg", type=str,default="classification/4cls_cfg.json" ,help="config path")
     parser.add_argument("--debug", action="store_true", help="train on only first 1000 images")
+    parser.add_argument("--save_epoch", type=int,default=4, help="which epoch to save as")
     parser.add_argument("--dim", type=int,default=512, help="img_dimension")
     parser.add_argument("--model_name", type=str,default='efficientnet_b0', help="model name")
     parser.add_argument("--epochs", type=int,default=10, help="how many epochs to run")
@@ -334,14 +366,23 @@ if __name__ == "__main__":
     DEBUG=opt.debug
     BATCH_SIZES=[opt.bs]
     NUM_CLASS=1
-    MODEL_DIR=opt.MODEL_DIR
+    if '.h5' in opt.MODEL_DIR:
+        MODEL_DIR=os.path.dirname(opt.MODEL_DIR)
+        MODEL_SAVENAME=os.path.basename(opt.MODEL_DIR)
+    else:
+        MODEL_DIR=opt.MODEL_DIR
+        MODEL_SAVENAME='model.h5'
+        
     PRETRAIN=opt.CHECKPOINT_DIR
     TRAIN_PATH=opt.TRAIN_DATA_CLEAN_PATH
     MODEL_NAME=opt.model_name
     RICORD=opt.RICORD_PATH
-    use_ricord=True if len(RICORD)>0 else False
+    SAVE_EPOCH=opt.save_epoch
     
-    params = json.load(open("classification/4cls_cfg.json", "r"))
+    use_ricord=True if len(RICORD)>0 else False
+    os.makedirs(MODEL_DIR,exist_ok=True)
+        
+    params = json.load(open(opt.cfg, "r"))
     params["IMG_SIZES"]=[[opt.dim,opt.dim]]
     params["EPOCHS"]= [opt.epochs]
     DIM=params["IMG_SIZES"][0]
@@ -363,8 +404,8 @@ if __name__ == "__main__":
     #-----------------------------------------
 
     
-    df = pd.read_csv('./data/meta/train_dupicate.csv')
-    fold_df = pd.read_csv("./data/meta/scd_fold.csv")
+    df = pd.read_csv(os.path.join('.','data','meta','train_duplicate.csv'))
+    fold_df = pd.read_csv(os.path.join('.','data','meta','scd_fold.csv'))
     fold_df['StudyInstanceUID'] = fold_df['image_id'].map(dict(df[['image_id', 'StudyInstanceUID']].values))
     study2fold = dict(fold_df[['StudyInstanceUID', 'fold']].values)
     df['fold'] = df['StudyInstanceUID'].map(study2fold)
@@ -373,7 +414,7 @@ if __name__ == "__main__":
     
     print('##',' ','Modifying dataframe',' ', '##','\n')
     print('Train:')
-    print('\tBefore size:',df.shape[0])
+    print('   Before size:',df.shape[0])
     
     ## fix data
     def get_fix(grp):
@@ -381,27 +422,27 @@ if __name__ == "__main__":
             grp.loc[grp.label=='none 1 0 0 1 1', 'fix'] = 1
         return grp
     df['fix'] = 0
-    tqdm.pandas(desc="\tFixing train labels  ")
+    tqdm.pandas(desc="   Fixing train labels  ")
     df = df.groupby(['StudyInstanceUID']).progress_apply(get_fix)
     df = df[df.fix!=1]
-    print('\tAfter fix size:', df.shape[0])
+    print('   After fix size:', df.shape[0])
     
     # remove duplicates
     dup_0 = df.query("dup_id==0") # take all from non-duplicates
     dup_1 = df.query("dup_id>0").groupby("StudyInstanceUID").head(1) # take one from duplicates
     df    = pd.concat((dup_0, dup_1), axis=0)
-    print('\tAfter removal size:',df.shape[0])
+    print('   After removal size:',df.shape[0])
     print()
     
-    df["image_path"]       = TRAIN_PATH+ "/train/" + df.image_id+".png"
+    df["image_path"]       = TRAIN_PATH+ os.sep+"train"+os.sep + df.image_id+".png"
     
     tqdm.pandas(desc="Mapping train labels  ")
     df['class_name']  = df.label.progress_apply(lambda x: 'none' if 'none 1 0 0 1 1' in x else 'opacity')
     df['class_label'] = df.class_name.map(name2label)
     
     if use_ricord:
-        extr_df = pd.read_csv('./data/meta/meta_r.csv')
-        extr_df['image_path'] =  RICORD + '/images/' + extr_df.fname.str.replace('.dcm.jpg', '.png')
+        extr_df = pd.read_csv(os.path.join('.','data','meta','meta_r.csv'))
+        extr_df['image_path'] =  RICORD + os.sep+'images' +os.sep+extr_df.fname.str.replace('.dcm.jpg', '.png')
         extr_df.rename({'class_name':'sl-name',
                        'class_label':'sl-label'}, axis=1, inplace=True)
         extr_df['class_label'] = 1-tf.keras.utils.to_categorical(extr_df['sl-label'].values, 4)[:, 0].astype(int)
@@ -410,8 +451,23 @@ if __name__ == "__main__":
 
     print()
     
-    
-    
+    #-----------------------------------------
+    #-----------------------------------------
+    ## Save a sample
+    #-----------------------------------------
+    #-----------------------------------------
+
+    temp_df = df[:1000]
+    paths  = temp_df.image_path.tolist()
+    labels = temp_df["class_label"].values
+    ds = build_dataset(paths, labels, cache=False, batch_size=BATCH_SIZES[0]*REPLICAS,
+                       repeat=True, shuffle=False, augment=True)
+    ds = ds.unbatch().batch(20)
+    batch = next(iter(ds))
+    save_loc=os.path.join(MODEL_DIR,"sample_image.png")
+    display_batch(batch, os.path.join("sample_image.png"),5)
+    del batch,ds,temp_df,labels,paths,save_loc
+    z=gc.collect()
     
     #-----------------------------------------
     #-----------------------------------------
@@ -452,13 +508,15 @@ if __name__ == "__main__":
                    repeat=True, shuffle=True, augment=params["AUGMENT"])
     
     
-    os.makedirs(MODEL_DIR,exist_ok=True)
+
     sv = tf.keras.callbacks.ModelCheckpoint(
             os.path.join(MODEL_DIR,"model-%s_epoch-{epoch:02d}.h5"%(MODEL_NAME)),
             monitor="auc", verbose=0, save_best_only=False,
             save_weights_only=False, mode="max", save_freq="epoch",)
     
-    callbacks = [sv,get_lr_callback(BATCH_SIZES[fold])]
+    save= EpochSave(save_epoch=SAVE_EPOCH,filepath=os.path.join(MODEL_DIR,MODEL_SAVENAME))
+    callbacks = [sv,get_lr_callback(BATCH_SIZES[fold]),save]
+    
     print()
     history = model.fit(
         train_ds, 
@@ -483,6 +541,6 @@ if __name__ == "__main__":
         plt.scatter(x,y,s=200,color="#d62728"); plt.text(x-0.03*xdist,y+0.05*ydist,"min loss",size=14)
         plt.ylabel("Loss",size=14)
         plt.legend(loc=3)
-        plt.savefig("classification/loss_plot_2cls.png")
-        plt.show()
+        plt.savefig(os.path.join(MODEL_DIR,"loss_plot_2cls.png"))
+        #plt.show()
     
