@@ -17,5 +17,5 @@
 ## train_2cls.py
 * train_2cls takes in all the arguments of train_4cls, with some additional arguments
 
-* --RICORD_PATH takes the path where the ricord images are located. The script expects the images in TRAIN_DATA_CLEAN_PATH/train/*.png format
+* --RICORD_PATH takes the path where the ricord images are located. The script expects the images in RICORD_PATH/images/*.png format
 
