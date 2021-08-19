@@ -281,7 +281,10 @@ name2effnet = {
 def build_model(dim=[512,512], model_name='efficientnet_b0',weights="imagenet",compile_model=True,
                 loss="BinaryCrossentropy",ls=0.01):
     inp = tf.keras.layers.Input(shape=(*dim,3))
-    base = name2effnet[model_name](input_shape=(*dim,3),weights=weights,include_top=False)
+    if '.h5' not in weights:
+        base = name2effnet[model_name](input_shape=(*dim,3),weights=weights,include_top=False)
+    else:
+        base=tf.keras.models.load_model(weights, compile=False).layers[1]
     x = base(inp)
     x = tf.keras.layers.GlobalAveragePooling2D()(x)
     x = tf.keras.layers.Dense(64, activation = "relu")(x)

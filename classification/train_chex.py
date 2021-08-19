@@ -460,10 +460,14 @@ if __name__ == "__main__":
             os.path.join(MODEL_DIR,"model-%s_epoch-{epoch:02d}.h5"%(MODEL_NAME)),
             monitor="auc", verbose=0, save_best_only=False,
             save_weights_only=False, mode="max", save_freq="epoch",)
+        
+    callbacks = [sv,get_lr_callback(BATCH_SIZES[fold])]
     
-    save= EpochSave(save_epoch=SAVE_EPOCH,filepath=os.path.join(MODEL_DIR,MODEL_SAVENAME))
+    if SAVE_EPOCH!=-1:
+        save= EpochSave(save_epoch=SAVE_EPOCH,filepath=os.path.join(MODEL_DIR,MODEL_SAVENAME))
+        callbacks.append(save)
     
-    callbacks = [sv,get_lr_callback(BATCH_SIZES[fold]),save]
+
     print()
     history = model.fit(
         train_ds, 
@@ -472,7 +476,10 @@ if __name__ == "__main__":
         steps_per_epoch=len(train_paths)/BATCH_SIZES[fold]/REPLICAS,
         verbose=params["VERBOSE"]
     )
-    
+    if SAVE_EPOCH==-1:
+        print('Saving final model...')
+        model.save(os.path.join(MODEL_DIR,MODEL_SAVENAME))
+        
     if DISPLAY_PLOT:
         plt.figure(figsize=(15,5))
         plt.plot(np.arange(len(history.history["auc"])),history.history["auc"],"-o",label="Train auc",color="#ff7f0e")
