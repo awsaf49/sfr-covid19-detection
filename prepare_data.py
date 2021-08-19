@@ -320,7 +320,7 @@ if __name__ == '__main__':
     tmp_df = pd.DataFrame({'image_id':image_id,
                        'width':width,
                        'height':height})
-    tmp_df['iamge_id'] = tmp_df['image_id']+'_image'
+    tmp_df['image_id'] = tmp_df['image_id']+'_image'
     test_df = pd.merge(test_df, tmp_df, on = 'image_id', how = 'left')
     checked()
     print(f'### WRITING {CLEAN_DATA_DIR}/test.csv', end=' ')
