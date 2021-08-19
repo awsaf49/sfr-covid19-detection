@@ -529,6 +529,7 @@ if __name__ == "__main__":
             epochs=params["EPOCHS"][0] if not DEBUG else 2, 
             callbacks = callbacks, 
             steps_per_epoch=len(train_paths)/BATCH_SIZES[0]/REPLICAS,
+            validation_data=val_ds, 
             verbose=params["VERBOSE"]
         )
 
