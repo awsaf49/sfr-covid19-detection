@@ -480,12 +480,12 @@ if __name__ == "__main__":
     
     
     os.makedirs(MODEL_DIR,exist_ok=True)
-    sv = tf.keras.callbacks.ModelCheckpoint(
-            os.path.join(MODEL_DIR,"model-%s_epoch-{epoch:02d}.h5"%(MODEL_NAME)),
-            monitor="auc", verbose=0, save_best_only=False,
-            save_weights_only=False, mode="max", save_freq="epoch",)
+    # sv = tf.keras.callbacks.ModelCheckpoint(
+    #         os.path.join(MODEL_DIR,"model-%s_epoch-{epoch:02d}.h5"%(MODEL_NAME)),
+    #         monitor="auc", verbose=0, save_best_only=False,
+    #         save_weights_only=False, mode="max", save_freq="epoch",)
     
-    callbacks = [sv,get_lr_callback(BATCH_SIZES[fold])]
+    callbacks = [get_lr_callback(BATCH_SIZES[fold])]
     if SAVE_EPOCH!=-1:
         save= EpochSave(save_epoch=SAVE_EPOCH,filepath=os.path.join(MODEL_DIR,MODEL_SAVENAME))
         callbacks.append(save)
