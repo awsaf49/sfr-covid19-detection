@@ -14,8 +14,15 @@ def train_model(model_name, opt):
 
     ####################### 5 FOLD TRAINING
     for fold in range(5):
+        print('#'*50)
+        print('#'*50)
+        print('#'*20, model_name.upper(), ' - FOLD ', fold, '#'*10)
+        print('#'*50)
+        print('#'*50)
+
         # TODO : fix this
-        save_dir = f"{model_name}/fold-{fold}/best.pt"
+        os.makedirs( f"./models/{model_name}/fold-{fold}", exist_ok = True)
+        save_dir = f"./models/{model_name}/fold-{fold}/best.pt"
         command = f"python detection/train_det_1fold.py --settings-path {opt.settings_path} " + \
                   f"--pretrained-backbone {backbone_path} --model {model_name} " + \
                   f"--save-dir {save_dir} --img-size 512 --epochs 2 --debug --fold {fold}"
