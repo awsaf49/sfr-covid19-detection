@@ -513,9 +513,9 @@ if __name__ == "__main__":
         with strategy.scope():
             model = build_model(model_name=MODEL_NAME,dim=DIM, weights=PRETRAIN,compile_model=True)
 
-        train_ds = build_dataset(train_paths, train_labels, cache= True, batch_size=BATCH_SIZES[0]*REPLICAS,
+        train_ds = build_dataset(train_paths, train_labels, cache= False, batch_size=BATCH_SIZES[0]*REPLICAS,
                        repeat=True, shuffle=True, augment=params["AUGMENT"])
-        val_ds   = build_dataset(val_paths, val_labels, cache=True, batch_size=BATCH_SIZES[0]*REPLICAS,
+        val_ds   = build_dataset(val_paths, val_labels, cache=False, batch_size=BATCH_SIZES[0]*REPLICAS,
                        repeat=False, shuffle=False, augment=False)
 
 
@@ -553,3 +553,6 @@ if __name__ == "__main__":
             plt.legend(loc=3)
             plt.savefig(os.path.join(MODEL_DIR,f"loss_plot_2cls_fold-{fold}.png"))
             #plt.show()
+
+        del model,train_ds,val_ds
+        z=gc.collect()
