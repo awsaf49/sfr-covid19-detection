@@ -21,7 +21,7 @@ cfg2ep_2cls = {
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--settings-path', type=str, default='SETTINGS.json', help='image size to create')
-    parser.add_argument('--bs-path', type=str, default='cls_bs.json', help='classification batch size info for different models')
+    parser.add_argument('--bs-path', type=str, default='classification/cls_bs.json', help='classification batch size info for different models')
     parser.add_argument("--debug", action="store_true", help="train on only first 1000 images")
     opt = parser.parse_args()
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
             name=model+'_'+str(img_size)
             name=os.path.join(save_loc_chex,name,name+'.h5')
 
-            command= f'python classification/train_chex.py --TRAIN_DATA_CLEAN_PATH {ROOT_CHEX_DIR} ' + \ 
+            command= f'python classification/train_chex.py --TRAIN_DATA_CLEAN_PATH {ROOT_CHEX_DIR} ' +\
              f'--MODEL_DIR {name} --epochs {epoch} --dim {img_size} --model_name {model} --bs {bs} --cfg {cfg}'
 
             if debug:
