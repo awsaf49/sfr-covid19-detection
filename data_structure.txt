@@ -1,0 +1,127 @@
+.
+├── LICENSE.md
+├── README.md
+├── SETTINGS.json
+├── bbox
+│   ├── __init__.py
+│   ├── bbox_filter.py
+│   ├── csv
+│   │   ├── feature.csv
+│   │   ├── gt.csv
+│   │   ├── pred.csv
+│   │   ├── sample_submission.csv
+│   │   ├── scd_fold.csv
+│   │   ├── submission-wh-filtered.csv
+│   │   ├── submission-wh.csv
+│   │   ├── submission.csv
+│   │   ├── submission_image.csv
+│   │   ├── train_dupicate.csv
+│   │   └── zft.csv
+│   ├── sub2zft.py
+│   ├── utils.py
+│   └── zft2sub.py
+├── checkpoints
+│   ├── 2cls
+│   ├── 4cls
+│   └── det
+├── classification
+│   ├── 2cls_cfg.json
+│   ├── 4cls_cfg.json
+│   ├── README.md
+│   ├── chex_cfg.json
+│   ├── train_2cls.py
+│   ├── train_2cls_fold.py
+│   ├── train_4cls.py
+│   └── train_chex.py
+├── data
+│   ├── chexpert
+│   │   ├── train
+│   │   ├── train.csv
+│   │   ├── valid
+│   │   └── valid.csv
+│   ├── meta
+│   │   ├── meta_chex.csv
+│   │   ├── meta_r.csv
+│   │   ├── scd_fold.csv
+│   │   └── train_duplicate.csv
+│   ├── ricord
+│   │   ├── MIDRC-RICORD
+│   │   └── MIDRC-RICORD-meta.csv
+│   ├── rsna-pneumonia-detection-challenge
+│   │   ├── GCP Credits Request Link - RSNA.txt
+│   │   ├── stage_2_detailed_class_info.csv
+│   │   ├── stage_2_sample_submission.csv
+│   │   ├── stage_2_test_images
+│   │   ├── stage_2_train_images
+│   │   └── stage_2_train_labels.csv
+│   └── siim-covid19-detection
+│       ├── sample_submission.csv
+│       ├── test
+│       ├── train
+│       ├── train_image_level.csv
+│       └── train_study_level.csv
+├── detection
+│   ├── chexpert_detection.py
+│   ├── prepare_yolo_format.py
+│   └── train_det_1fold.py
+├── predict.py
+├── predict_cls.py
+├── predict_det.py
+├── prepare_data.py
+├── requirements.txt
+├── train_det.py
+└── yolov5
+    ├── Dockerfile
+    ├── LICENSE
+    ├── README.md
+    ├── __init__.py
+    ├── data
+    │   ├── GlobalWheat2020.yaml
+    │   ├── SKU-110K.yaml
+    │   ├── VisDrone.yaml
+    │   ├── argoverse_hd.yaml
+    │   ├── coco.yaml
+    │   ├── coco128.yaml
+    │   ├── hyp.finetune.yaml
+    │   ├── hyp.finetune_objects365.yaml
+    │   ├── hyp.scratch.yaml
+    │   ├── objects365.yaml
+    │   ├── scripts
+    │   └── voc.yaml
+    ├── detect.py
+    ├── hubconf.py
+    ├── merge.py
+    ├── models
+    │   ├── __init__.py
+    │   ├── common.py
+    │   ├── configs
+    │   ├── experimental.py
+    │   ├── export.py
+    │   ├── hub
+    │   ├── yolo.py
+    │   ├── yolov3-spp.yaml
+    │   ├── yolov5x-tr.yaml
+    │   └── yolov5x6.yaml
+    ├── od
+    │   ├── __init__.py
+    │   ├── data
+    │   └── models
+    ├── test.py
+    ├── train.py
+    ├── utils
+    │   ├── __init__.py
+    │   ├── activations.py
+    │   ├── autoanchor.py
+    │   ├── aws
+    │   ├── datasets.py
+    │   ├── flask_rest_api
+    │   ├── general.py
+    │   ├── google_app_engine
+    │   ├── google_utils.py
+    │   ├── loss.py
+    │   ├── metrics.py
+    │   ├── plots.py
+    │   ├── torch_utils.py
+    │   └── wandb_logging
+    └── weights
+        └── download_weights.sh
