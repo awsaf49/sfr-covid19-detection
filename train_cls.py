@@ -32,7 +32,7 @@ if __name__ == '__main__':
     ROOT_CHEX_DIR=SETTINGS['ROOT_CHEXPERT_DIR']
     TRAIN_PATH=SETTINGS['TRAIN_DATA_CLEAN_PATH']
     RICORD_PATH=SETTINGS['RICORD_DIR']
-    SAVE_DIR=SETTINGS['MODEL_DIR']
+    SAVE_DIR=SETTINGS['CLS_MODEL_DIR']
 
     save_loc_chex=os.path.join(SAVE_DIR,'chex_cls')
     save_loc_2cls=os.path.join(SAVE_DIR,'2cls')
@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     saved_models_chex={}
     epoch=10
-
+    print ('\n CHEXPERT TRAINING \n')
     for model in bs_params.keys():
         for img_size in bs_params[model].keys():
             bs=bs_params[model][img_size]
@@ -67,7 +67,9 @@ if __name__ == '__main__':
 
     model_dirs_4cls=[]
     epoch=8
-
+    
+    
+    print ('\n 4 CLASS TRAINING \n')
     for model in bs_params.keys():
         print('\n## ',f'Model - {model}',' ##','\n')
         for img_size in bs_params[model].keys():
@@ -89,6 +91,7 @@ if __name__ == '__main__':
             model_dirs_4cls.append(os.path.abspath(os.path.join(os.getcwd(),name)))
 
     ## 2 CLS TRAININIG
+    print ('\n 2 CLASS TRAINING \n')
     model= 'efficientnet_b7'
     img_size=640
     epoch = 8
@@ -105,4 +108,3 @@ if __name__ == '__main__':
 
 
     model_dirs_2cls.extend(glob(os.path.abspath(os.path.join(os.getcwd(),name,'*.h5'))))
-

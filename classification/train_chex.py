@@ -432,7 +432,7 @@ if __name__ == "__main__":
     train_df = df
      
     if DEBUG:
-        train_df  = train_df.iloc[:1000]
+        train_df  = train_df.iloc[:100]
 
     train_paths = train_df.image_path.values; train_labels = train_df[class_names].values.astype(np.float32)
        
