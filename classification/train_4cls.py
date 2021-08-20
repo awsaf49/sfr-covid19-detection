@@ -198,7 +198,7 @@ def build_decoder(with_labels=True, target_size=[512,612], ext="png"):
 
         img = tf.cast(img, tf.float32) / 255.0
         
-        img=tf.image.resize(img,target_size)
+        img=tf.image.resize(img,target_size,method='area')
         
         img = tf.reshape(img, [*target_size, 3])
 

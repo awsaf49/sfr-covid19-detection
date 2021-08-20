@@ -196,7 +196,7 @@ def build_decoder(with_labels=True, target_size=[512,612], ext="png"):
 
         img = tf.cast(img, tf.float32) / 255.0
         
-        img=tf.image.resize(img,target_size)
+        img=tf.image.resize(img,target_size,method='area')
         
         img = tf.reshape(img, [*target_size, 3])
 
@@ -445,7 +445,8 @@ if __name__ == "__main__":
     
     if use_ricord:
         extr_df = pd.read_csv(os.path.join('.','data','meta','meta_r.csv'))
-        extr_df['image_path'] =  RICORD + os.sep+'images' +os.sep+extr_df.fname.str.replace('.dcm.jpg', '.png')
+        #extr_df['image_path'] =  RICORD + os.sep+'images' +os.sep+extr_df.fname.str.replace('.dcm.jpg', '.png')
+        extr_df['image_path'] =  RICORD + os.sep+'MIDRC-RICORD'+os.sep+'MIDRC-RICORD'+os.sep+extr_df.fname
         extr_df.rename({'class_name':'sl-name',
                        'class_label':'sl-label'}, axis=1, inplace=True)
         extr_df['class_label'] = 1-tf.keras.utils.to_categorical(extr_df['sl-label'].values, 4)[:, 0].astype(int)
