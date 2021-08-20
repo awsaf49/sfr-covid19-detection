@@ -14,12 +14,11 @@ def train_model(model_name, opt):
 
     ####################### 5 FOLD TRAINING
     for fold in range(5):
-        print('#'*50)
-        print('#'*50)
-        print('#'*20, model_name.upper(), ' - FOLD ', fold, '#'*10)
-        print('#'*50)
-        print('#'*50)
-
+        print('\n\n')
+        print('#'*100)
+        print('#'*30, model_name.upper(), ' - FOLD ', fold, '#'*50)
+        print('#'*100)
+        print('\n\n')
         # TODO : fix this
         os.makedirs( f"./models/{model_name}/fold-{fold}", exist_ok = True)
         save_dir = f"./models/{model_name}/fold-{fold}/best.pt"
@@ -28,6 +27,8 @@ def train_model(model_name, opt):
                   f"--save-dir {save_dir} --img-size 512 --epochs 2 --debug --fold {fold}"
         print(command)
         os.system(command)
+
+    shutil.rmtree('runs')
 
 
 if __name__ == '__main__':
