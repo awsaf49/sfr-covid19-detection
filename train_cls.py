@@ -94,7 +94,7 @@ if __name__ == '__main__':
     ## 2 CLS TRAININIG
     print ('\n 2 CLASS TRAINING \n')
     model= 'efficientnet_b7'
-    img_size=640
+    img_size='640'
     epoch = 8
     chex_path=saved_models_chex[model][img_size]
     name=model+'_'+str(img_size)
