@@ -23,7 +23,7 @@ def extract_json_info(json_file):
     PATHS['ROOT_DIR'] = os. getcwd()
     PATHS['YOLO_REPO_PATH'] = 'yolov5'
     PATHS['META_DATA_DIR'] = data['META_DATA_DIR']
-    PATHS['TRAIN_CSV_PATH'] = data['TRAIN_CSV_PATH']
+    PATHS['TRAIN_CSV_PATH'] = join(data['META_DATA_DIR'], 'train_duplicate.csv')
     PATHS['DET_TRAIN_IMAGES_PATH'] = data['TRAIN_DATA_CLEAN_PATH']
     PATHS['DET_TRAIN_LABELS_PATH'] = data['LABEL_DIR']
 

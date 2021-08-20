@@ -135,12 +135,13 @@ def train(hyp, opt, device, tb_writer=None):
     freeze = []  # parameter names to freeze (full or partial)
     if opt.freeze:
         freeze = ['model.%s.' % x for x in range(opt.freeze_modelno)]
+    print('##FREEZING :')
     for k, v in model.named_parameters():
         v.requires_grad = True  # train all layers
         if any(x in k for x in freeze):
-            print('freezing %s' % k)
+            print('freezing %s' % k, end=';')
             v.requires_grad = False
-
+    print('\n\n')
     # Optimizer
     nbs = 64  # nominal batch size
     accumulate = max(round(nbs / total_batch_size), 1)  # accumulate loss before optimizing
