@@ -487,9 +487,9 @@ if __name__ == "__main__":
         ricord_df= extr_df.copy()
 
         if DEBUG:
-            train_df  = train_df.iloc[:1000]
-            val_df     = val_df.iloc[:1000]
-            ricord_df  = ricord_df.iloc[:1000]
+            train_df  = train_df.iloc[:50]
+            val_df     = val_df.iloc[:50]
+            ricord_df  = ricord_df.iloc[:50]
 
         train_paths = train_df.image_path.values; train_labels = train_df["class_label"].values.astype(np.float32)
         val_paths   = val_df.image_path.values;   val_labels   = val_df["class_label"].values.astype(np.float32)
