@@ -14,11 +14,7 @@ if __name__ == '__main__':
 
     print('\n\n')
     print('#'*100)
-<<<<<<< HEAD
-    print('#'*30, 'CLASSIFICATION', '#'*50)
-=======
-    print('#'*30, ' CLASSIFICATION ', '#'*50)
->>>>>>> 710a87d9e9b84e3d79ee907c97a2dbbc66d3f5f9
+    print('#'*30, ' CLASSIFICATION ', '#'*52)
     print('#'*100)
     print('\n\n')
 
@@ -29,11 +25,7 @@ if __name__ == '__main__':
 
     print('\n\n')
     print('#'*100)
-<<<<<<< HEAD
-    print('#'*30, 'DETECTION', '#'*50)
-=======
-    print('#'*30, ' DETECTION ', '#'*50)
->>>>>>> 710a87d9e9b84e3d79ee907c97a2dbbc66d3f5f9
+    print('#'*30, ' DETECTION ', '#'*52)
     print('#'*100)
     print('\n\n')
 

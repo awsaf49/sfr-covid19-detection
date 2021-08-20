@@ -76,7 +76,7 @@ if __name__ == '__main__':
         for img_size in bs_params[model].keys():
             print('## ',f'Image Size - {img_size}',' ##')
 
-            save_epoch=cfg2ep_2cls[model][img_size]
+            save_epoch=1 if opt.debug else cfg2ep_2cls[model][img_size]
             chex_path=saved_models_chex[model][img_size]
             bs=bs_params[model][img_size]
 
