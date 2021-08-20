@@ -1,8 +1,3 @@
-
-
-
-
-
 import timm
 from timm.models.layers import SelectAdaptivePool2d
 import numpy as np
@@ -690,11 +685,6 @@ if __name__ == '__main__':
 
             best_epoch = 0
             for e in range(self.config.n_epochs):
-                if (time.time() - TRAINING_START)/60 > TRAIN_TIME : 
-                    self.log('Time limit exceeded')
-                    break
-
-
                 lr = self.optimizer.param_groups[0]['lr']
                 self.log(f'LR: {lr}')
 
