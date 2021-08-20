@@ -32,7 +32,7 @@ if __name__ == '__main__':
     ROOT_CHEX_DIR=SETTINGS['ROOT_CHEXPERT_DIR']
     TRAIN_PATH=SETTINGS['TRAIN_DATA_CLEAN_PATH']
     RICORD_PATH=SETTINGS['RICORD_DIR']
-    SAVE_DIR=SETTINGS['CLS_MODEL_DIR']
+    SAVE_DIR=SETTINGS['MODEL_DIR']
 
     save_loc_chex=os.path.join(SAVE_DIR,'chex_cls')
     save_loc_2cls=os.path.join(SAVE_DIR,'2cls')
