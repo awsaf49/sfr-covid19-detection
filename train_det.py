@@ -27,7 +27,7 @@ def train_model(model_name, opt):
         print('#'*100)
         print('\n\n')
 
-        save_dir = join(data['MODEL_DIR'], f'{model_name}/fold-{fold}')
+        save_dir = join(data['DET_MODEL_DIR'], f'{model_name}/fold-{fold}')
         os.makedirs(save_dir, exist_ok = True)
         save_dir += '/best.pt'
         command = f"python detection/train_det_1fold.py --settings-path {opt.settings_path} " + \
