@@ -6,11 +6,13 @@ import argparse
 
 def train_model(model_name, opt):
     ####################### CHEXPERT PRETRAIN
-    command = f"python detection/chexpert_detection.py --CONFIG {model_name}"
+    os.makedirs( f"./chex_det_models/{model_name}", exist_ok = True)
+    save_chex_dir = f"./chex_det_models/{model_name}/best.pt"
+    command = f"python detection/chexpert_detection.py --CONFIG {model_name} --save-dir {save_chex_dir}"
     print(command)
     # os.system(command)
     # TODO : get pretrained model path
-    backbone_path = ""
+    backbone_path = save_chex_dir
 
     ####################### 5 FOLD TRAINING
     for fold in range(5):
@@ -28,7 +30,7 @@ def train_model(model_name, opt):
         print(command)
         os.system(command)
 
-    shutil.rmtree('runs')
+    shutil.rmtree('runs') 
 
 
 if __name__ == '__main__':

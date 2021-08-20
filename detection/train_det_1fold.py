@@ -160,6 +160,7 @@ if __name__ == '__main__':
         print("### RUNNING IN DEBUG MODE")
         train_paths = train_paths[:100]
         val_paths = val_paths[:100]
+        EPOCHS = 3
 
     with open(join(PATHS['YOLO_REPO_PATH'], 'train.txt'), 'w') as f:
         for path in train_paths:

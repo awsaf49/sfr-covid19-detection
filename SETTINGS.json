@@ -15,5 +15,4 @@
     "SUBMISSION_DIR": "./submissions/",
     "ROOT_CHEXPERT_DIR": "/kaggle/input/chexpert-512a-dataset",
     "RICORD_DIR": "/kaggle/input/ricord-covid19-xray-positive-tests"
-    
 }
