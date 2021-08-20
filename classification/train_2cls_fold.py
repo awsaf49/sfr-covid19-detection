@@ -479,7 +479,11 @@ if __name__ == "__main__":
     ## Training
     #-----------------------------------------
     #-----------------------------------------
-    
+    if DEBUG:
+        df=df.iloc[:50]
+        extr_df=extr_df.iloc[:50]
+
+
     for fold in range(5):           
         print()
         print('-'*50,'\n',' '*20,f'FOLD - {fold}',' '*20,'\n','-'*50)
@@ -487,10 +491,10 @@ if __name__ == "__main__":
         val_df   = df.query("fold==@fold")
         ricord_df= extr_df.copy()
 
-        if DEBUG:
-            train_df  = train_df.iloc[:50]
-            val_df     = val_df.iloc[:50]
-            ricord_df  = ricord_df.iloc[:50]
+        # if DEBUG:
+        #     train_df  = train_df.iloc[:50]
+        #     val_df     = val_df.iloc[:50]
+        #     ricord_df  = ricord_df.iloc[:50]
 
         train_paths = train_df.image_path.values; train_labels = train_df["class_label"].values.astype(np.float32)
         val_paths   = val_df.image_path.values;   val_labels   = val_df["class_label"].values.astype(np.float32)
