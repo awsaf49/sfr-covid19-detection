@@ -9,7 +9,7 @@ print('### IMPORTING LIBRARIES', end=' ')
 import os, shutil
 import numpy as np
 import pandas as pd
-from glob import glob
+from glob import glob, iglob
 from tqdm import tqdm; tqdm.pandas()
 import cv2
 import pydicom
@@ -19,6 +19,7 @@ from pydicom.pixel_data_handlers.util import apply_voi_lut
 from joblib import Parallel, delayed
 import argparse
 import ast
+import warnings
 checked()
 
 # mapping
@@ -62,7 +63,7 @@ def read_xray(path, voi_lut = True, fix_monochrome = True):
         
     return data
 
-def resize_and_save(file_path, dim=256, base_dir= None, aspect_ratio=False):
+def dicom2image(file_path, dim=256, base_dir= None, aspect_ratio=False):
     img  = read_xray(file_path)
     h, w = img.shape[:2]  # orig hw
     if dim!=-1:
@@ -74,8 +75,28 @@ def resize_and_save(file_path, dim=256, base_dir= None, aspect_ratio=False):
         else:
             img = cv2.resize(img, (dim, dim), cv2.INTER_AREA)
     filename = file_path.split('/')[-1].split('.')[0]
-    cv2.imwrite(os.path.join(base_dir, f'{filename}.png'), img, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+    new_file_path = os.path.join(base_dir, f'{filename}.png')
+    check = cv2.imwrite(new_file_path, img, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+    if not check:
+        warnings.warn(f'{new_file_path} writing failed')
     return filename.replace('dcm',''),w, h
+
+def resize_image(file_path, dim=256, aspect_ratio=False):
+    img  = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
+    h, w = img.shape[:2]  # orig hw
+    if dim!=-1:
+        if aspect_ratio:
+            r = dim / max(h, w)  # resize image to img_size
+            interp = cv2.INTER_AREA if r < 1 else cv2.INTER_LINEAR
+            if r != 1:  # always resize down, only resize up if training with augmentation
+                img = cv2.resize(img, (int(w * r), int(h * r)), interpolation=interp)
+        else:
+            img = cv2.resize(img, (dim, dim), cv2.INTER_AREA)
+    filename = file_path.split('/')[-1].split('.')[0]
+    check = cv2.imwrite(file_path, img, [cv2.IMWRITE_JPEG_QUALITY, 98]) # [cv2.IMWRITE_PNG_COMPRESSION, 0] for .png
+    if not check:
+        warnings.warn(f'{file_path} writing failed')
+    return filename,w, h
 
 def find_path(row):
     row['filepath'] = glob(os.path.join(train_directory, row['StudyInstanceUID'] +f"/*/{row.image_id}.dcm"))[0]
@@ -231,7 +252,7 @@ if __name__ == '__main__':
     print(f'### WRITING {write_files} TRAIN IMAGES', end=' ')
     info     = Parallel(n_jobs=-1,
                        verbose=0,
-                       backend='threading')(delayed(resize_and_save)(file_path,dim=opt.img_size, base_dir=base_dir)\
+                       backend='threading')(delayed(dicom2image)(file_path,dim=opt.img_size, base_dir=base_dir)\
                                             for file_path in tqdm(train_paths[:write_files],
                                                                   desc='writing '))
     image_id, width, height = list(zip(*info))
@@ -313,7 +334,7 @@ if __name__ == '__main__':
     print(f'### WRITING {write_files} TEST IMAGES', end=' ')
     info = Parallel(n_jobs=-1, 
                     verbose=0, 
-                    backend='threading')(delayed(resize_and_save)(file_path,dim=opt.img_size, base_dir=base_dir)\
+                    backend='threading')(delayed(dicom2image)(file_path,dim=opt.img_size, base_dir=base_dir)\
                                          for file_path in tqdm(test_paths[:write_files], 
                                                                desc='writing '))
     image_id, width, height = list(zip(*info))
@@ -376,7 +397,7 @@ if __name__ == '__main__':
     print(f'### WRITING RSNA IMAGE DATA in {RSNA_IMAGE_DIR}', end=' ')
     info        = Parallel(n_jobs=-1,
                           backend="threading",
-                          verbose=0)(delayed(resize_and_save)(file_path,dim=opt.img_size,base_dir=base_dir)\
+                          verbose=0)(delayed(dicom2image)(file_path,dim=opt.img_size,base_dir=base_dir)\
                                                                    for file_path in tqdm(rsna_paths[:write_files],
                                                                                         desc='writing '))
     checked()
@@ -422,6 +443,25 @@ if __name__ == '__main__':
     RSNA_META_PATH = os.path.join(META_DATA_DIR, 'rsna.csv')
     print(f'### WRITING {RSNA_META_PATH}', end=' ')
     rsna_df.to_csv(RSNA_META_PATH,index=False)
+    checked()
+    
+    #-------------------------------
+    ### chexpert
+    #-------------------------------
+    CHEXPERT_DIR    = os.path.abspath(cfg['ROOT_CHEXPERT_DIR'])
+    print('\n### SEARCHING CHEXPERT IMAGE PATHS...',)
+    it = iglob(os.path.join(CHEXPERT_DIR,'**/*jpg'), recursive=True)
+    chexpert_paths  = []
+    for idx, path in enumerate(tqdm(it, desc='searching ', total=100 if opt.debug else 224000)):
+        if opt.debug and idx>100:
+            break
+        chexpert_paths.append(path)
+    print(f'### OVERWRITING CHEXPERT IMAGE DATA in', end=' ')
+    info        = Parallel(n_jobs=-1,
+                          backend="threading",
+                          verbose=0)(delayed(resize_image)(file_path,dim=opt.img_size)\
+                                                                   for file_path in tqdm(chexpert_paths,
+                                                                                        desc='writing '))
     checked()
     # all done
     print('\n### CLEAN DATA IS READY!', '\U0001F603')
