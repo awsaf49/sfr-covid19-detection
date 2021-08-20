@@ -22,14 +22,15 @@ def extract_json_info(json_file):
         data = json.load(f)
     PATHS['ROOT_DIR'] = os. getcwd()
     PATHS['YOLO_REPO_PATH'] = 'yolov5'
-    PATHS['TRAIN_CSV_PATH'] = data['']
-    PATHS['DET_TRAIN_IMAGES_PATH'] = data['']
-    PATHS['DET_TRAIN_LABELS_PATH'] = data['']
+    PATHS['META_DATA_DIR'] = data['META_DATA_DIR']
+    PATHS['TRAIN_CSV_PATH'] = join(data['META_DATA_DIR'], 'train_duplicate.csv')
+    PATHS['DET_TRAIN_IMAGES_PATH'] = data['TRAIN_DATA_CLEAN_PATH']
+    PATHS['DET_TRAIN_LABELS_PATH'] = data['LABEL_DIR']
 
     # EXTERNAL RSNA DATA
-    PATHS['RSNA_IMAGES_PATH'] = data['']
-    PATHS['RSNA_LABELS_PATH'] = data['']
-    PATHS['RSNA_METADATA_CSV'] = data['']
+    PATHS['RSNA_IMAGES_PATH'] = join(data['RSNA_CLEAN_DIR'], 'images')
+    PATHS['RSNA_LABELS_PATH'] = join(data['RSNA_CLEAN_DIR'], 'labels')
+    PATHS['RSNA_METADATA_CSV'] = join(data['META_DATA_DIR'], 'rsna.csv')
 
     # DEFINE YOLO DATA PATH
     os.makedirs('yolov5/DETDataset/scd/images', exist_ok = True)
@@ -39,8 +40,6 @@ def extract_json_info(json_file):
     PATHS['YOLO_LABELS_PATH'] = 'yolov5/DETDataset/scd/labels/main/'
     PATHS['YOLO_RSNA_IMAGES_PATH'] = 'yolov5/DETDataset/scd/images/rsna-pdc/'
     PATHS['YOLO_RSNA_LABELS_PATH'] = 'yolov5/DETDataset/scd/labels/rsna-pdc/'
-    
-    PATHS['META_DATA_DIR'] = data['']
     return PATHS
 
 def hyperparams():
@@ -140,7 +139,7 @@ if __name__ == '__main__':
 
     # FIX DATA
     train_df['fix'] = 0
-    train_df = train_df.groupby(['StudyInstanceUID']).progress_apply(get_fix)
+    train_df = train_df.groupby(['StudyInstanceUID']).apply(get_fix)
     print('Fixed train.csv shape: ',train_df.shape, '\nand count:\n', train_df.fix.value_counts())
     
     # CLASS TO LABEL MAPPING
@@ -153,7 +152,7 @@ if __name__ == '__main__':
     class_names  = list(name2label.keys())
     class_labels = list(name2label.values())
     label2name = {v:k for k, v in name2label.items()}
-    train_df['class_name']  = train_df.progress_apply(lambda row:row[class_names].iloc[[row[class_names].values.argmax()]].index.tolist()[0], axis=1)
+    train_df['class_name']  = train_df.apply(lambda row:row[class_names].iloc[[row[class_names].values.argmax()]].index.tolist()[0], axis=1)
     train_df['class_label'] = train_df.class_name.map(name2label)
     
 
@@ -184,10 +183,10 @@ if __name__ == '__main__':
     convert1(PATHS['YOLO_LABELS_PATH'], save=True)
     print('before conversion:')
     print(open(sorted(glob(PATHS['DET_TRAIN_LABELS_PATH']+'*'))[10], 'r').read())
-    print(open(sorted(glob(PATHS['DET_TRAIN_LABELS_PATH']+'*'))[100], 'r').read())
+    print(open(sorted(glob(PATHS['DET_TRAIN_LABELS_PATH']+'*'))[20], 'r').read())
     print('after conversion:')
     print(open(sorted(glob(PATHS['YOLO_LABELS_PATH']+'*'))[10], 'r').read())
-    print(open(sorted(glob(PATHS['YOLO_LABELS_PATH']+'*'))[100], 'r').read())
+    print(open(sorted(glob(PATHS['YOLO_LABELS_PATH']+'*'))[20], 'r').read())
 
     ####################  FILTER
     print('===== Filter =====')

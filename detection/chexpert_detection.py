@@ -1,8 +1,3 @@
-
-
-
-
-
 import timm
 from timm.models.layers import SelectAdaptivePool2d
 import numpy as np
@@ -36,27 +31,30 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
             
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--CONFIG", type=str, default="yolov5x-tr.yaml", help="config of yolo model")
+    parser.add_argument("--CONFIG", type=str, default="yolov5x-tr", help="config of yolo model")
     parser.add_argument("--DEBUG", action='store_true', help="is debug")
-    
-    
-    
+    parser.add_argument('--save-dir', type=str, default='chex_models/best.pt', help='where to save best.pt')    
     opt = parser.parse_args()
-    if opt.CONFIG == "yolov5x-tr.yaml":
+
+    SAVE_DIR = opt.save_dir
+    if opt.CONFIG == "yolov5x-tr":
         CONFIG = './yolov5/models/yolov5x-tr.yaml'
         MODEL = 'yolov5x'
         WEIGHTS = MODEL + ".pt"
         END_MODEL_POINT = 10
-    elif opt.CONFIG == "yolov3-spp.yaml":
+        EPOCHS = 11
+    elif opt.CONFIG == "yolov3-spp":
         CONFIG = './yolov5/models/yolov3-spp.yaml'
         MODEL = 'yolov3-spp'
         WEIGHTS = MODEL + ".pt"
         END_MODEL_POINT = 11
-    elif opt.CONFIG == "yolov5x6.yaml":
+        EPOCHS = 10
+    elif opt.CONFIG == "yolov5x6":
         CONFIG = './yolov5/models/yolov5x6.yaml'
-        MODEL = 'yolov5x'
+        MODEL = 'yolov5x6'
         WEIGHTS = MODEL + ".pt"
         END_MODEL_POINT = 12
+        EPOCHS = 12
     else:
         print("Invalid config")
         
@@ -69,9 +67,10 @@ if __name__ == '__main__':
     BATCH_SIZE = 8
     AC_STEP = 8
     IMAGE_SIZE = 512    
-    EPOCHS = 30
-    TRAIN_TIME = 420 # mins
+    TRAIN_TIME = -1 # mins
     NUM_CLASSES = 14
+    if opt.DEBUG:
+        EPOCHS = 5
     
     from_previous_checkpoint = False
     checkpoint_path = None
@@ -288,8 +287,9 @@ if __name__ == '__main__':
     ROTATE_LIMIT = 0
 
     def get_train_transform():
-        return A.Compose([              
-                    A.HorizontalFlip(p=0.5),
+        return A.Compose([    
+                   A.Resize(512, 512, p=1.0),
+                   A.HorizontalFlip(p=0.5),
                    A.ShiftScaleRotate(
                        shift_limit=SHIFT_LIMIT, scale_limit=SCALE_LIMIT, rotate_limit=ROTATE_LIMIT, border_mode=cv2.BORDER_CONSTANT,p=SSR_PROB
                     ),
@@ -301,7 +301,8 @@ if __name__ == '__main__':
 
 
     def get_test_transform():
-        return A.Compose([              
+        return A.Compose([    
+                    A.Resize(512, 512, p=1.0),          
                     ToTensorV2(p=1.0),
             ])
 
@@ -419,6 +420,7 @@ if __name__ == '__main__':
         n_epochs = config['epochs']
         lr =  config['lr']
         accumulation = AC_STEP
+        save_dir = SAVE_DIR
 
         folder = 'Output'
         verbose = True
@@ -681,16 +683,8 @@ if __name__ == '__main__':
 
 
         def fit_all_data(self, train_loader):
-            TRAINING_START = time.time()
-    #         if self.wconfig: wandb.watch(self.model, log="all", log_freq=10)
-
             best_epoch = 0
             for e in range(self.config.n_epochs):
-                if (time.time() - TRAINING_START)/60 > TRAIN_TIME : 
-                    self.log('Time limit exceeded')
-                    break
-
-
                 lr = self.optimizer.param_groups[0]['lr']
                 self.log(f'LR: {lr}')
 
@@ -698,8 +692,10 @@ if __name__ == '__main__':
 
 
                 self.log(f'Train => Epoch: {self.epoch}, summary_loss: {train_loss.avg:.5f}, train_score: {train_auc: .5f}')
-                self.log(f'Saving in {self.base_dir}/checkpoint-{str(self.epoch).zfill(3)}epoch.bin')
-                self.save(f'{self.base_dir}/checkpoint-{str(self.epoch).zfill(3)}epoch.bin', f'{self.base_dir}/checkpoint-{str(self.epoch).zfill(3)}epoch.pt' )
+                
+                if e == self.config.n_epochs-1:
+                    self.log(f'Saving in {self.config.save_dir}')
+                    self.save(self.config.save_dir.replace('.pt', '.bin'), self.config.save_dir)
 
                 if train_auc > self.best_score:
                     best_epoch = self.epoch
@@ -708,12 +704,12 @@ if __name__ == '__main__':
 
 
                 if self.config.validation_scheduler:
-                    self.scheduler.step(metrics=val_loss.avg)
+                    self.scheduler.step(metrics=train_loss.avg)
 
                 self.epoch += 1
 
             self.log(f'Best score : {self.best_score}, Best_score_loss : {self.best_summary_loss}, Best Epoch : {best_epoch}')
-
+            shutil.rmtree(self.base_dir)
 
 
     model = Model_Classifier(

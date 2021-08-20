@@ -22,14 +22,15 @@ def extract_json_info(json_file):
         data = json.load(f)
     PATHS['ROOT_DIR'] = os. getcwd()
     PATHS['YOLO_REPO_PATH'] = 'yolov5'
-    PATHS['TRAIN_CSV_PATH'] = data['']
-    PATHS['DET_TRAIN_IMAGES_PATH'] = data['']
-    PATHS['DET_TRAIN_LABELS_PATH'] = data['']
+    PATHS['META_DATA_DIR'] = data['META_DATA_DIR']
+    PATHS['TRAIN_CSV_PATH'] = join(data['META_DATA_DIR'], 'train_duplicate.csv')
+    PATHS['DET_TRAIN_IMAGES_PATH'] = data['TRAIN_DATA_CLEAN_PATH']
+    PATHS['DET_TRAIN_LABELS_PATH'] = data['LABEL_DIR']
 
     # EXTERNAL RSNA DATA
-    PATHS['RSNA_IMAGES_PATH'] = data['']
-    PATHS['RSNA_LABELS_PATH'] = data['']
-    PATHS['RSNA_METADATA_CSV'] = data['']
+    PATHS['RSNA_IMAGES_PATH'] = join(data['RSNA_CLEAN_DIR'], 'images')
+    PATHS['RSNA_LABELS_PATH'] = join(data['RSNA_CLEAN_DIR'], 'labels')
+    PATHS['RSNA_METADATA_CSV'] = join(data['META_DATA_DIR'], 'rsna.csv')
 
     # DEFINE YOLO DATA PATH
     os.makedirs('yolov5/DETDataset/scd/images', exist_ok = True)
@@ -39,8 +40,6 @@ def extract_json_info(json_file):
     PATHS['YOLO_LABELS_PATH'] = 'yolov5/DETDataset/scd/labels/main/'
     PATHS['YOLO_RSNA_IMAGES_PATH'] = 'yolov5/DETDataset/scd/images/rsna-pdc/'
     PATHS['YOLO_RSNA_LABELS_PATH'] = 'yolov5/DETDataset/scd/labels/rsna-pdc/'
-    
-    PATHS['META_DATA_DIR'] = data['']
     return PATHS
 
 
@@ -160,6 +159,7 @@ if __name__ == '__main__':
         print("### RUNNING IN DEBUG MODE")
         train_paths = train_paths[:100]
         val_paths = val_paths[:100]
+        EPOCHS = 3
 
     with open(join(PATHS['YOLO_REPO_PATH'], 'train.txt'), 'w') as f:
         for path in train_paths:

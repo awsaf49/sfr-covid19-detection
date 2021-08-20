@@ -11,9 +11,10 @@
     "RSNA_CLEAN_DIR": "./data/rsna-pdc/",
     "CHECKPOINT_DIR": "./checkpoints/",
     "MODEL_DIR": "./models/",
+    "CLS_MODEL_DIR": "./models/cls",
+    "DET_MODEL_DIR": "./models/det",
     "LOGS_DIR": "./logs/",
     "SUBMISSION_DIR": "./submissions/",
     "ROOT_CHEXPERT_DIR": "/kaggle/input/chexpert-512a-dataset",
     "RICORD_DIR": "/kaggle/input/ricord-covid19-xray-positive-tests"
-    
 }

@@ -5,12 +5,19 @@ import json
 import argparse
 
 def train_model(model_name, opt):
+    with open(opt.settings_path, 'r') as f:
+        data = json.load(f)
+
     ####################### CHEXPERT PRETRAIN
-    command = f"python detection/chexpert_detection.py --CONFIG {model_name}"
+    save_chex_dir = f"./chex_det_models/{model_name}"
+    os.makedirs(save_chex_dir, exist_ok = True)
+    save_chex_dir += '/best.pt'
+    command = f"python detection/chexpert_detection.py --CONFIG {model_name} --save-dir {save_chex_dir}"
+    if opt.debug:
+            command += " --DEBUG"
     print(command)
-    # os.system(command)
-    # TODO : get pretrained model path
-    backbone_path = ""
+    os.system(command)
+    backbone_path = save_chex_dir
 
     ####################### 5 FOLD TRAINING
     for fold in range(5):
@@ -19,21 +26,25 @@ def train_model(model_name, opt):
         print('#'*30, model_name.upper(), ' - FOLD ', fold, '#'*50)
         print('#'*100)
         print('\n\n')
-        # TODO : fix this
-        os.makedirs( f"./models/{model_name}/fold-{fold}", exist_ok = True)
-        save_dir = f"./models/{model_name}/fold-{fold}/best.pt"
+
+        save_dir = join(data['DET_MODEL_DIR'], f'{model_name}/fold-{fold}')
+        os.makedirs(save_dir, exist_ok = True)
+        save_dir += '/best.pt'
         command = f"python detection/train_det_1fold.py --settings-path {opt.settings_path} " + \
                   f"--pretrained-backbone {backbone_path} --model {model_name} " + \
-                  f"--save-dir {save_dir} --img-size 512 --epochs 2 --debug --fold {fold}"
+                  f"--save-dir {save_dir} --img-size 512 --epochs 50 --fold {fold}"
+        if opt.debug:
+            command += " --debug"
         print(command)
         os.system(command)
 
-    shutil.rmtree('runs')
+    shutil.rmtree('runs') 
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--settings-path', type=str, default='SETTINGS.json', help='image size to create')
+    parser.add_argument('--debug', action='store_true', help='process only 100 images in debug mode')
     opt = parser.parse_args()
 
     ##################### PREPARE DATA
