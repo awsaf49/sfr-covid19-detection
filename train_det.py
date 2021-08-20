@@ -13,6 +13,8 @@ def train_model(model_name, opt):
     os.makedirs(save_chex_dir, exist_ok = True)
     save_chex_dir += '/best.pt'
     command = f"python detection/chexpert_detection.py --CONFIG {model_name} --save-dir {save_chex_dir}"
+    if opt.debug:
+            command += " --DEBUG"
     print(command)
     os.system(command)
     backbone_path = save_chex_dir
