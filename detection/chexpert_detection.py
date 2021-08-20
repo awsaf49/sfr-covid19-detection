@@ -69,6 +69,8 @@ if __name__ == '__main__':
     IMAGE_SIZE = 512    
     TRAIN_TIME = -1 # mins
     NUM_CLASSES = 14
+    if opt.DEBUG:
+        EPOCHS = 5
     
     from_previous_checkpoint = False
     checkpoint_path = None
@@ -707,7 +709,7 @@ if __name__ == '__main__':
                 self.epoch += 1
 
             self.log(f'Best score : {self.best_score}, Best_score_loss : {self.best_summary_loss}, Best Epoch : {best_epoch}')
-
+            shutil.rmtree(self.base_dir)
 
 
     model = Model_Classifier(
