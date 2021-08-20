@@ -6,14 +6,14 @@ import argparse
 
 cfg2ep_2cls = {
     'efficientnet_b6':{
-        512:5,
-        640:5,
-        768:5
+        '512':5,
+        '640':5,
+        '768':5
     },
     'efficientnet_b7':{
-        512:4,
-        640:4,
-        768:6
+        '512':4,
+        '640':4,
+        '768':6
     }
 }
 
@@ -48,6 +48,7 @@ if __name__ == '__main__':
     epoch=10
     print ('\n CHEXPERT TRAINING \n')
     for model in bs_params.keys():
+        saved_models_chex[model]={}
         for img_size in bs_params[model].keys():
             bs=bs_params[model][img_size]
 
@@ -87,7 +88,7 @@ if __name__ == '__main__':
 
             if debug:
                 command=command +'--debug'
-
+            os.system(command)
             model_dirs_4cls.append(os.path.abspath(os.path.join(os.getcwd(),name)))
 
     ## 2 CLS TRAININIG
@@ -105,6 +106,6 @@ if __name__ == '__main__':
 
     if debug:
         command=command +'--debug'
-
+    os.system(command)
 
     model_dirs_2cls.extend(glob(os.path.abspath(os.path.join(os.getcwd(),name,'*.h5'))))
