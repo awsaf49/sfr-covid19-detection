@@ -499,7 +499,7 @@ if __name__ == "__main__":
         verbose=params["VERBOSE"]
     )
     if SAVE_EPOCH==-1:
-        print('Saving final model...')
+        #print('Saving final model...')
         model.save(os.path.join(MODEL_DIR,MODEL_SAVENAME))
     
     if DISPLAY_PLOT:

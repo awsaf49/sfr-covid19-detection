@@ -350,7 +350,7 @@ if __name__ == "__main__":
     parser.add_argument("--dim", type=int,default=512, help="img_dimension")
     parser.add_argument("--model_name", type=str,default='efficientnet_b0', help="model name")
     parser.add_argument("--epochs", type=int,default=10, help="how many epochs to run")
-    parser.add_argument("--save_epoch", type=int,default=4, help="which epoch to save as")
+    parser.add_argument("--save_epoch", type=int,default=-1, help="which epoch to save as")
     parser.add_argument("--bs", type=int,default=32, help="batch size per replica")
     opt = parser.parse_args()
     
@@ -477,7 +477,7 @@ if __name__ == "__main__":
         verbose=params["VERBOSE"]
     )
     if SAVE_EPOCH==-1:
-        print('Saving final model...')
+        #print('Saving final model...')
         model.save(os.path.join(MODEL_DIR,MODEL_SAVENAME))
         
     if DISPLAY_PLOT:
