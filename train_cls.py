@@ -55,7 +55,7 @@ if __name__ == '__main__':
             name=os.path.join(save_loc_chex,name,name+'.h5')
 
             command= f'python classification/train_chex.py --TRAIN_DATA_CLEAN_PATH {ROOT_CHEX_DIR} ' +\
-             f'--MODEL_DIR {name} --epochs {epoch} --dim {img_size} --model_name {model} --bs {bs} --cfg {cfg}'
+             f'--MODEL_DIR {name} --epochs {epoch} --dim {img_size} --model_name {model} --bs {bs} '
 
             if debug:
                 command=command +'--debug'
