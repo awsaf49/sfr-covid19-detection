@@ -419,7 +419,8 @@ if __name__ == "__main__":
     df    = pd.concat((dup_0, dup_1), axis=0)
     print('After removal size:',df.shape[0])
     
-    df["image_path"]       = TRAIN_PATH+os.sep+ "train" + os.sep+df.image_id+".png"
+    #df["image_path"]       = TRAIN_PATH+os.sep+ "train" + os.sep+df.image_id+".png"
+    df["image_path"]       = TRAIN_PATH+ os.sep+ df.image_id+".png"
     tqdm.pandas(desc="Mapping labels  ")
     df["class_name"]  = df.progress_apply(lambda row:row[class_names].iloc[[row[class_names].values.argmax()]].index.tolist()[0], 
                                  axis=1)

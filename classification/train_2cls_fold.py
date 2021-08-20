@@ -437,7 +437,8 @@ if __name__ == "__main__":
     print('   After removal size:',df.shape[0])
     print()
     
-    df["image_path"]       = TRAIN_PATH+ os.sep+"train"+os.sep + df.image_id+".png"
+    #df["image_path"]       = TRAIN_PATH+ os.sep+"train"+os.sep + df.image_id+".png"
+    df["image_path"]       = TRAIN_PATH+ os.sep+ df.image_id+".png"
     
     tqdm.pandas(desc="Mapping train labels  ")
     df['class_name']  = df.label.progress_apply(lambda x: 'none' if 'none 1 0 0 1 1' in x else 'opacity')
