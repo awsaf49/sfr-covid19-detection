@@ -6,9 +6,9 @@
 Below you can find a outline of how to reproduce our solution.
 If you run into any trouble with the setup/code or have any questions please contact me at awsaf49@gmail.com
 
-## Requirements:
+## 1. Requirements:
 
-### Hardware:
+### 1.1 Hardware:
 * GPU : 1x Tesla P100
 * GPU Memory : 16.2b GiB
 * CUDA Version : 11.0
@@ -16,7 +16,7 @@ If you run into any trouble with the setup/code or have any questions please con
 * CPU RAM : 13 GiB
 * DISK : 2 TB
 
-### Libraries:
+### 1.2 Libraries:
 
 - python-gdcm==3.0.9.1
 - pydicom==2.1.2
@@ -44,14 +44,15 @@ If you run into any trouble with the setup/code or have any questions please con
 - timm==0.4.12
 - efficientnet==1.1.1
 
-## External Packages
+## 2. External Packages
 External Packages with version number are listed on [requirements.txt](https://github.com/awsaf49/sfr-covid19-detection/blob/main/requirements.txt)
 
 ```
 ! pip install -qr requirements.txt
 ```
 
-## Data Preparation
+## 3. Data Preparation
+### 3.1 Description
 - Download [competition data](https://www.kaggle.com/c/siim-covid19-detection/data) and extract it to `./data/siim-covid19-detection`
 - Download [chexpert dataset](https://us13.mailchimp.com/mctx/clicks?url=http%3A%2F%2Fdownload.cs.stanford.edu%2Fdeep%2FCheXpert-v1.0.zip&h=bb5d97db389ae3d2a319d4f78d1f3205c97a22ddb7f4ed59d0dc08db0a4383a2&v=1&xid=da3b9def78&uid=55365305&pool=contact_facing&subject=CheXpert-v1.0%3A+Subscription+Confirmed) and extract to `./data/chexpert`
 - Download [RSNA competion data](https://www.kaggle.com/c/rsna-pneumonia-detection-challenge/data) and extract it to `./data/rsna-pneumonia-detection-challenge`
@@ -90,6 +91,7 @@ After this run `prepare_data.py`. It does the following
 - Read training data from RAW_DATA_DIR (specified in SETTINGS.json)
 - Run any preprocessing steps
 - Save the cleaned data to CLEAN_DATA_DIR (specified in SETTINGS.json)
+### 3.2 Script
 ### prepare_data.py
 - **--img-size** image size in which we want our cleaned to to be
 - **--debug** if given 1, it will only process 100 images
@@ -98,13 +100,15 @@ After this run `prepare_data.py`. It does the following
 ```
 
 
-## Training
+## 4. Training
+### 4.1 Description
 Simply run the `train.py` script. It does the following
 - Read training data from TRAIN_DATA_CLEAN_PATH (specified in SETTINGS.json)
 - Pretrains classification and detection backbones in chexpert data.
 - Finetunes them on competition data and external data.
 - Save model to MODEL_DIR (specified in SETTINGS.json)
 
+### 4.2 Script
 ### train. py
 - **--settings-path** path to SETTINGS.json. Default value uses the correct path.
 - **--bs-path** path to json file containing necessary batch sizes for different stages. Default value uses the correct path.
@@ -113,7 +117,8 @@ Simply run the `train.py` script. It does the following
 ! python train.py
 ```
 
-## Prediction
+## 5. Prediction
+### 5.1 Description
 Before proceeding download this [already trained checkpoints](https://www.kaggle.com/dataset/d5bb61630644beae6821f07e4be4b9cfb643550521f9ddec244b6c41c742a053) and unzip them into the path specified in **CHECKPOINT_DIR** in SETTINGS.json.
 
 `./checkpoints` then should look like
@@ -131,8 +136,9 @@ For predicting on test data run `predict.py`. It does the following
 - Use our models to make predictions on new samples
 - Save our predictions to SUBMISSION_DIR (specified in SETTINGS.json)
 
+### 5.2 Script
 ### predict. py 
-- **--mode** if used "full", then it will use the weights saved in MODEL_DIR(which was saved after training from scratch) and when used "fast" it will use the weights saved in CHECKPOINT_DIR(already trained checkpoints)
+- **--mode** if used "full", then it will use the weights saved in [MODEL_DIR](https://github.com/awsaf49/sfr-covid19-detection/tree/main/models) (which was saved after training from scratch) and when used "fast" it will use the weights saved in [CHECKPOINT_DIR](https://github.com/awsaf49/sfr-covid19-detection/tree/main/checkpoints) (already trained checkpoints)
 - **--debug** if given 1, it will infer on only first 100 images
 
 ```

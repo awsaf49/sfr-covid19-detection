@@ -20,10 +20,6 @@
 │   ├── sub2zft.py
 │   ├── utils.py
 │   └── zft2sub.py
-├── checkpoints
-│   ├── 2cls
-│   ├── 4cls
-│   └── det
 ├── classification
 │   ├── 2cls_cfg.json
 │   ├── 4cls_cfg.json
@@ -64,11 +60,14 @@
 │   ├── chexpert_detection.py
 │   ├── prepare_yolo_format.py
 │   └── train_det_1fold.py
+├── data_structure.txt
 ├── predict.py
 ├── predict_cls.py
 ├── predict_det.py
 ├── prepare_data.py
 ├── requirements.txt
+├── train.py
+├── train_cls.py
 ├── train_det.py
 └── yolov5
     ├── Dockerfile
