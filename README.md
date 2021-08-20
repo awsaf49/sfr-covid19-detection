@@ -3,7 +3,7 @@
 
 ![header](https://user-images.githubusercontent.com/36858976/119347450-5c669680-bcbd-11eb-97bd-f6d666b59cda.png)
 
-Below you can find a outline of how to reproduce my solution.
+Below you can find a outline of how to reproduce our solution.
 If you run into any trouble with the setup/code or have any questions please contact me at awsaf49@gmail.com
 
 ## Requirements:
@@ -45,17 +45,17 @@ If you run into any trouble with the setup/code or have any questions please con
 - efficientnet==1.1.1
 
 ## External Packages
-External Packages are with version number is listed on [requirements.txt](https://github.com/awsaf49/sfr-covid19-detection/blob/main/requirements.txt)
+External Packages with version number are listed on [requirements.txt](https://github.com/awsaf49/sfr-covid19-detection/blob/main/requirements.txt)
 
 ```
 ! pip install -qr requirements.txt
 ```
 
 ## Data Preparation
-- Download [competition data](https://www.kaggle.com/c/siim-covid19-detection/data) and extract it to ./data/siim-covid19-detection
-- Download [chexpert dataset](https://us13.mailchimp.com/mctx/clicks?url=http%3A%2F%2Fdownload.cs.stanford.edu%2Fdeep%2FCheXpert-v1.0.zip&h=bb5d97db389ae3d2a319d4f78d1f3205c97a22ddb7f4ed59d0dc08db0a4383a2&v=1&xid=da3b9def78&uid=55365305&pool=contact_facing&subject=CheXpert-v1.0%3A+Subscription+Confirmed) and extract to ./data/chexpert
-- Download [RSNA competion data](https://www.kaggle.com/c/rsna-pneumonia-detection-challenge/data) and extract it to ./data/rsna-pneumonia-detection-challenge
-- Download [Ricord dataset](https://www.kaggle.com/raddar/ricord-covid19-xray-positive-tests) and extract it to ./data/ricord
+- Download [competition data](https://www.kaggle.com/c/siim-covid19-detection/data) and extract it to `./data/siim-covid19-detection`
+- Download [chexpert dataset](https://us13.mailchimp.com/mctx/clicks?url=http%3A%2F%2Fdownload.cs.stanford.edu%2Fdeep%2FCheXpert-v1.0.zip&h=bb5d97db389ae3d2a319d4f78d1f3205c97a22ddb7f4ed59d0dc08db0a4383a2&v=1&xid=da3b9def78&uid=55365305&pool=contact_facing&subject=CheXpert-v1.0%3A+Subscription+Confirmed) and extract to `./data/chexpert`
+- Download [RSNA competion data](https://www.kaggle.com/c/rsna-pneumonia-detection-challenge/data) and extract it to `./data/rsna-pneumonia-detection-challenge`
+- Download [Ricord dataset](https://www.kaggle.com/raddar/ricord-covid19-xray-positive-tests) and extract it to `./data/ricord`
 
 After this `./data` directory should look something like this.
 ```
@@ -84,7 +84,7 @@ After this `./data` directory should look something like this.
 │       └── train_study_level.csv
 ```
 
-In case you are wondering to have a look at complete directort structure, you can see it in [data_structure.txt](https://github.com/awsaf49/sfr-covid19-detection/blob/main/data_structure.txt)
+In case you are wondering to have a look at complete directory structure, you can see it in [data_structure.txt](https://github.com/awsaf49/sfr-covid19-detection/blob/main/data_structure.txt)
 
 After this run `prepare_data.py`. It does the following
 - Read training data from RAW_DATA_DIR (specified in SETTINGS.json)
@@ -132,7 +132,7 @@ For predicting on test data run `predict.py`. It does the following
 - Save our predictions to SUBMISSION_DIR (specified in SETTINGS.json)
 
 ### predict. py 
-- **--mode** if used "full", then it will use the weights saved in MODEL_DIR and when used "fast" it will use the weights saved in CHECKPOINT_DIR
+- **--mode** if used "full", then it will use the weights saved in MODEL_DIR(which was saved after training from scratch) and when used "fast" it will use the weights saved in CHECKPOINT_DIR(already trained checkpoints)
 - **--debug** if given 1, it will infer on only first 100 images
 
 ```
