@@ -681,8 +681,6 @@ if __name__ == '__main__':
 
 
         def fit_all_data(self, train_loader):
-            TRAINING_START = time.time()
-
             best_epoch = 0
             for e in range(self.config.n_epochs):
                 lr = self.optimizer.param_groups[0]['lr']
