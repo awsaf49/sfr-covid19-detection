@@ -1,5 +1,5 @@
 {
-    "RAW_DATA_DIR": "/kaggle/input/siim-covid19-detection/",
+    "RAW_DATA_DIR": "./data/siim-covid19-detection/",
     "CLEAN_DATA_DIR": "./data/clean/",
     "TRAIN_DATA_CLEAN_PATH": "./data/clean/train/",
     "TEST_DATA_CLEAN_PATH": "./data/clean/test/",
@@ -7,13 +7,13 @@
     "TRAIN_CSV_PATH": "./data/clean/train.csv",
     "TEST_CSV_PATH": "./data/clean/test.csv",
     "META_DATA_DIR": "./data/meta/",
-    "RSNA_RAW_DIR": "/kaggle/input/rsna-pneumonia-detection-challenge/",
+    "RSNA_RAW_DIR": "./data/rsna-pneumonia-detection-challenge/",
     "RSNA_CLEAN_DIR": "./data/rsna-pdc/",
     "CHECKPOINT_DIR": "./checkpoints/",
     "MODEL_DIR": "./models/",
     "DET_MODEL_DIR": "./models/det",
     "LOGS_DIR": "./logs/",
     "SUBMISSION_DIR": "./submissions/",
-    "ROOT_CHEXPERT_DIR": "/kaggle/input/chexpert-512a-dataset",
-    "RICORD_DIR": "/kaggle/input/ricord-covid19-xray-positive-tests"
+    "ROOT_CHEXPERT_DIR": "./data/chexpert",
+    "RICORD_DIR": "./data/ricord"
 }
