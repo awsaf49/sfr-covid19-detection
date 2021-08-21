@@ -78,7 +78,7 @@ if __name__ == '__main__':
     parser.add_argument('--pretrained-backbone', type=str, default='', help='chexpert pretrained backbones')
     parser.add_argument('--model', type=str, default='yolov5x-tr', help='name of model to train')
     parser.add_argument('--save-dir', type=str, default='det/fold/best.pt', help='where to save best.pt')
-
+    
     parser.add_argument('--img-size', type=int, default=512, help='image size to create')
     parser.add_argument('--batch-size', type=int, default=16, help='batch size')
     parser.add_argument('--epochs', type=int, default=60, help='no of epochs to train')

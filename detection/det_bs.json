@@ -1,0 +1,1 @@
+{"yolov5x-tr": {"pretrain": 8, "det": 16}, "yolov3-spp": {"pretrain": 8, "det": 16}, "yolov5x6": {"pretrain": 8, "det": 16}}

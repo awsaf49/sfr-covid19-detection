@@ -23,17 +23,20 @@ import argparse
 from sklearn.utils import shuffle
 from sklearn.model_selection import GroupKFold
 import torch.nn.functional as F
+import json
 from glob import glob
 import warnings
 warnings.filterwarnings("ignore") 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-           
+          
             
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--CONFIG", type=str, default="yolov5x-tr", help="config of yolo model")
     parser.add_argument("--DEBUG", action='store_true', help="is debug")
-    parser.add_argument('--save-dir', type=str, default='chex_models/best.pt', help='where to save best.pt')    
+    parser.add_argument('--save-dir', type=str, default='chex_models/best.pt', help='where to save best.pt')
+    parser.add_argument('--bs-path', type=str, default='detection/det_bs.json', help='detection batch size info for different models')
+       
     opt = parser.parse_args()
 
     SAVE_DIR = opt.save_dir
@@ -64,7 +67,9 @@ if __name__ == '__main__':
     FLEXIBLE = False
     EXTRA_FC = True
     FOLD = -1
-    BATCH_SIZE = 8
+    BS_DICT = json.load(open(opt.bs_path, "r"))
+    BATCH_SIZE = BS_DICT[opt.CONFIG]['pretrain']
+    print("USING BATCH SIZE : ", BATCH_SIZE)
     AC_STEP = 8
     IMAGE_SIZE = 512    
     TRAIN_TIME = -1 # mins
