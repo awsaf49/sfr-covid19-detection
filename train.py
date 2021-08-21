@@ -8,7 +8,8 @@ import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--settings-path', type=str, default='SETTINGS.json', help='image size to create')
-    parser.add_argument('--bs-path', type=str, default='classification/cls_bs.json', help='classification batch size info for different models')
+    parser.add_argument('--clsbs-path', type=str, default='classification/cls_bs.json', help='classification batch size info for different models')
+    parser.add_argument('--detbs-path', type=str, default='detection/det_bs.json', help='detection batch size info for different models')
     parser.add_argument('--debug', action='store_true', help='process only 100 images in debug mode')
     opt = parser.parse_args()
 
@@ -18,7 +19,7 @@ if __name__ == '__main__':
     print('#'*100)
     print('\n\n')
 
-    command = f'python train_cls.py --settings-path {opt.settings_path} --bs-path {opt.bs_path}'
+    command = f'python train_cls.py --settings-path {opt.settings_path} --bs-path {opt.clsbs_path}'
     if opt.debug:
         command += ' --debug'
     os.system(command)
@@ -29,7 +30,7 @@ if __name__ == '__main__':
     print('#'*100)
     print('\n\n')
 
-    command = f'python train_det.py --settings-path {opt.settings_path}'
+    command = f'python train_det.py --settings-path {opt.settings_path} --bs-path {opt.detbs_path}'
     if opt.debug:
         command += ' --debug'
     os.system(command)

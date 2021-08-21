@@ -15,7 +15,7 @@ def train_model(model_name, opt):
     save_chex_dir = f"./chex_det_models/{model_name}"
     os.makedirs(save_chex_dir, exist_ok = True)
     save_chex_dir += '/best.pt'
-    command = f"python detection/chexpert_detection.py --CONFIG {model_name} --save-dir {save_chex_dir}"
+    command = f"python detection/chexpert_detection.py --CONFIG {model_name} --save-dir {save_chex_dir} --bs-path {opt.bs_path}"
     if opt.debug:
             command += " --DEBUG"
     print(command)
