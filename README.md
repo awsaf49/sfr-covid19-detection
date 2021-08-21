@@ -9,11 +9,11 @@ If you run into any trouble with the setup/code or have any questions please con
 ## 1. Requirements:
 
 ### 1.1 Hardware:
-* GPU : 1x Tesla P100
-* GPU Memory : 16.2b GiB
+* GPU : 4x Tesla V100
+* GPU Memory : 4x32 GiB
 * CUDA Version : 11.0
 * Driver Version : 450.119.04
-* CPU RAM : 13 GiB
+* CPU RAM : 16 GiB
 * DISK : 2 TB
 
 ### 1.2 Libraries:
