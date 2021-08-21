@@ -111,7 +111,8 @@ Simply run the `train.py` script. It does the following
 ### 4.2 Script
 ### train. py
 - **--settings-path** path to SETTINGS.json. Default value uses the correct path.
-- **--bs-path** path to json file containing necessary batch sizes for different stages. Default value uses the correct path.
+- **--clsbs-path** path to json file containing necessary batch sizes for different classification models. Default value uses the correct path.
+- **--detbs-path** path to json file containing necessary batch sizes for different detection models. Default value uses the correct path.
 - **--debug** will process only 100 images
 ```
 ! python train.py
