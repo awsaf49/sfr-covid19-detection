@@ -6,7 +6,7 @@ pydicom==2.1.2
 joblib==1.0.1
 
 # tensorflow
-tensorflow==2.4.1
+tensorflow==2.5.3
 
 # torch
 torch==1.7.0
