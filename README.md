@@ -1,10 +1,55 @@
-# Best Student Team & 4th Place Solution of SIIM-FISABIO-RSNA COVID-19 Detection
-> Identify and localize COVID-19 abnormalities on chest radiographs
+<h1 align="center">Best Student Team & 4th Place Solution of SIIM-FISABIO-RSNA COVID-19 Detection</h1>
+<p align="center">Identify and localize COVID-19 abnormalities on chest radiographs</p>
 
-![header](https://user-images.githubusercontent.com/36858976/119347450-5c669680-bcbd-11eb-97bd-f6d666b59cda.png)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/36858976/119347450-5c669680-bcbd-11eb-97bd-f6d666b59cda.png">
+</p>
 
-Below you can find a outline of how to reproduce our solution.
-If you run into any trouble with the setup/code or have any questions please contact me at awsaf49@gmail.com
+<p align="center">
+This is a collaboration between <a href="https://www.buet.ac.bd/web/">BUET</a> <img src="https://i.ibb.co/LkL8TQ8/1200px-BUET-LOGO-svg.png" width="50"> and <a href="https://www.nvidia.com/en-us/">NVIDIA</a> <img src="https://i.ibb.co/y0JSH0H/Capture.jpg" height="40">
+</p>
+
+<h2 align="center">Team Members</h2>
+
+<div align="center">
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Affiliation</th>
+    <th>Country</th>
+  </tr>
+  <tr>
+    <td>Md Awsafur Rahman</td>
+    <td>Dept. of EEE, BUET</td>
+    <td>🇧🇩</td>
+  </tr>
+  <tr>
+    <td>Bishmoy Paul</td>
+    <td>Dept. of EEE, BUET</td>
+    <td>🇧🇩</td>
+  </tr>
+  <tr>
+    <td>Najibul Haque Sarker</td>
+    <td>Dept. of CSE, BUET</td>
+    <td>🇧🇩</td>
+  </tr>
+  <tr>
+    <td>Zaber Ibn Abdul Hakim</td>
+    <td>Dept. of CSE, BUET</td>
+    <td>🇧🇩</td>
+  </tr>
+  <tr>
+    <td>Chris Deotte</td>
+    <td>Nvidia</td>
+    <td>🇺🇸</td>
+  </tr>
+</table>
+</div>
+
+<h2 align="center">Solution Reproduction</h2>
+<p align="center">Below you can find an outline of how to reproduce our solution.</p>
+<p align="center">If you run into any trouble with the setup/code or have any questions please contact me at <a href="mailto:awsaf49@gmail.com">awsaf49@gmail.com</a></p>
+
 
 ## 0. Video Summary on YouTube
 [![video](https://img.shields.io/badge/Video-Presentation-F9D371)]([https://youtu.be/WEgB4lAZyKM](https://youtu.be/Rqal21kT-zA))
