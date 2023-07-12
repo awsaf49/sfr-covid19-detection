@@ -17,34 +17,41 @@ This is a collaboration between <a href="https://www.buet.ac.bd/web/">BUET</a> <
     <th>Name</th>
     <th>Affiliation</th>
     <th>Country</th>
+    <th>Position</th>
   </tr>
   <tr>
     <td>Md Awsafur Rahman</td>
     <td>Dept. of EEE, BUET</td>
     <td>🇧🇩</td>
+    <td>Undergrad Student</td>
   </tr>
   <tr>
     <td>Bishmoy Paul</td>
     <td>Dept. of EEE, BUET</td>
     <td>🇧🇩</td>
+    <td>Undergrad Student</td>
   </tr>
   <tr>
     <td>Najibul Haque Sarker</td>
     <td>Dept. of CSE, BUET</td>
     <td>🇧🇩</td>
+    <td>Undergrad Student</td>
   </tr>
   <tr>
     <td>Zaber Ibn Abdul Hakim</td>
     <td>Dept. of CSE, BUET</td>
     <td>🇧🇩</td>
+    <td>Undergrad Student</td>
   </tr>
   <tr>
     <td>Chris Deotte</td>
     <td>Nvidia</td>
     <td>🇺🇸</td>
+    <td>Senior Data Scientist</td>
   </tr>
 </table>
 </div>
+
 
 <h2 align="center">Solution Reproduction</h2>
 <p align="center">Below you can find an outline of how to reproduce our solution.</p>
