@@ -1,10 +1,19 @@
-# SIIM-FISABIO-RSNA COVID-19 Detection
+# Best Student Team & 4th Place Solution of SIIM-FISABIO-RSNA COVID-19 Detection
 > Identify and localize COVID-19 abnormalities on chest radiographs
 
 ![header](https://user-images.githubusercontent.com/36858976/119347450-5c669680-bcbd-11eb-97bd-f6d666b59cda.png)
 
 Below you can find a outline of how to reproduce our solution.
 If you run into any trouble with the setup/code or have any questions please contact me at awsaf49@gmail.com
+
+## 0. Video Summary on YouTube
+
+<a href="https://www.youtube.com/watch?v=Rqal21kT-zA">
+    <img src="https://github.com/awsaf49/sfr-covid19-detection/assets/36858976/0be81662-ad9b-4af8-bbb1-874df08011ee" alt="YouTube" width="600">
+</a>
+
+
+
 
 ## 1. Requirements:
 
