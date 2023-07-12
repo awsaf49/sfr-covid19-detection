@@ -7,13 +7,11 @@ Below you can find a outline of how to reproduce our solution.
 If you run into any trouble with the setup/code or have any questions please contact me at awsaf49@gmail.com
 
 ## 0. Video Summary on YouTube
+[![video](https://img.shields.io/badge/Video-Presentation-F9D371)]([https://youtu.be/WEgB4lAZyKM](https://youtu.be/Rqal21kT-zA))
 
-<a href="https://www.youtube.com/watch?v=Rqal21kT-zA">
-    <img src="https://github.com/awsaf49/sfr-covid19-detection/assets/36858976/0be81662-ad9b-4af8-bbb1-874df08011ee" alt="YouTube" width="600">
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=Rqal21kT-zA" target="_blank">
+ <img src="https://i.ibb.co/LxdzdDs/chris.jpg" alt="Watch the video" width="600" border="10" />
 </a>
-
-
-
 
 ## 1. Requirements:
 
