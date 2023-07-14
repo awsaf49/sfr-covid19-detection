@@ -59,7 +59,7 @@ This is a collaboration between <a href="https://www.buet.ac.bd/web/">BUET</a> <
 
 
 ## 0. Video Summary on YouTube
-[![video](https://img.shields.io/badge/Video-Presentation-F9D371)]([https://youtu.be/WEgB4lAZyKM](https://youtu.be/Rqal21kT-zA))
+[![video](https://img.shields.io/badge/Video-Presentation-F9D371)](https://youtu.be/Rqal21kT-zA)
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=Rqal21kT-zA" target="_blank">
  <img src="https://i.ibb.co/LxdzdDs/chris.jpg" alt="Watch the video" width="600" border="10" />
