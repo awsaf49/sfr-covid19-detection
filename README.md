@@ -1,4 +1,4 @@
-<h1 align="center">Best Student Team & 4th Place Solution of SIIM-FISABIO-RSNA COVID-19 Detection</h1>
+<h1 align="center">Best Student Team & 4th Place Solution of <a href="https://www.kaggle.com/competitions/siim-covid19-detection">SIIM-FISABIO-RSNA COVID-19 Detection</a></h1>
 <p align="center">Identify and localize COVID-19 abnormalities on chest radiographs</p>
 
 <p align="center">
