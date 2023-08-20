@@ -44,7 +44,7 @@ This is a collaboration between <a href="https://www.buet.ac.bd/web/">BUET</a> <
     <td>Undergrad Student</td>
   </tr>
   <tr>
-    <td>Chris Deotte</td>
+    <td><a href="https://developer.nvidia.com/blog/author/cdeotte/">Chris Deotte</a></td>
     <td>Nvidia</td>
     <td>🇺🇸</td>
     <td>Senior Data Scientist</td>
