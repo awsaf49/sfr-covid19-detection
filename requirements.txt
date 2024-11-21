@@ -3,7 +3,7 @@ python-gdcm==3.0.9.1
 pydicom==2.1.2
 
 # joblib
-joblib==1.0.1
+joblib==1.2.0
 
 # tensorflow
 tensorflow==2.4.1
